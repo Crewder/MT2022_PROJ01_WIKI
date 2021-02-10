@@ -1,17 +1,18 @@
 package config
 
 import (
+	"log"
+
 	"github.com/gowiki-api/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"log"
 )
 
 func DatabaseInit() {
 	var err error
 
 	var db *gorm.DB
-	db, err = gorm.Open(mysql.Open("go:go@tcp(127.0.0.1:3306)/gowiki_api?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{})
+	db, err = gorm.Open(mysql.Open("root:root@tcp(127.0.0.1:8889)/gowiki_api?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal(err)
