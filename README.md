@@ -1,17 +1,41 @@
 # gowiki-api
 
+## Description du projet
+
+## Lancement de l'application 
 
 
-##requete
+## requete
 
+# Article
 
-# Post 
+CreateArticle 
+
+Endpoint:
 ```
-CreateArticle
-
+```
 Model entrée : 
+```
+```
+Model sortie : 
+```
+```
+
+UpdateArticle
+
+Endpoint:
+```
+```
+Model entrée : 
+```
+```
+Model sortie : 
+```
 
 
-Model sortie
 
-````
+
+
+
+
+
