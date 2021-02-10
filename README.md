@@ -2,6 +2,9 @@
 
 ## Description du projet
 
+GORM ==> go get -u gorm.io/gorm
+        go get -u gorm.io/driver/sqlite
+
 Dépendance Router ==> go get -u github.com/gorilla/mux
 
 ## Lancement de l'application 
