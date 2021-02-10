@@ -1,15 +1,28 @@
 # gowiki-api
 
+*Camille Arsac, Rémi Coufourier, Florian Leroy et Steven Nativel*
+
+## Pré requis
+
+**GORM**
+```
+go get -u gorm.io/gorm  
+go get -u gorm.io/driver/mysql
+```
+
+**Dépendance Router**
+```
+go get -u github.com/gorilla/mux
+```
+
 ## Description du projet
 
-GORM   
-go get -u gorm.io/gorm  
-go get -u gorm.io/driver/mysgl   
-
-Dépendance Router  
-go get -u github.com/gorilla/mux
+Une API qui gère des wikis. On peut se connecter, créer un compte, créer un article, le modifier et mettre des commentaires.
 
 ## Lancement de l'application 
+```
+go run
+```
 
 ## Table de contenu
 
