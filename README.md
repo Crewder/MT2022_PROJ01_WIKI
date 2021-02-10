@@ -6,7 +6,7 @@
 
 ## Table de contenu
 
-## requete
+## Requetes
 
 | Endpoint |   Action  |
 |--|--|
@@ -27,7 +27,7 @@
 
 ## Connexion utilisateur
 
-## Modele de données
+## Modèle de données
 
 
 
