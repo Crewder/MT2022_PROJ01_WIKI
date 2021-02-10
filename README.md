@@ -15,6 +15,11 @@ go get -u gorm.io/driver/mysql
 go get -u github.com/gorilla/mux
 ```
 
+**Variables d'environnement**
+```
+go get github.com/joho/godotenv
+```
+
 ## Description du projet
 
 Une API qui gère des wikis. On peut se connecter, créer un compte, créer un article, le modifier et mettre des commentaires.
