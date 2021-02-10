@@ -2,10 +2,8 @@ package controllers
 
 import (
 	"encoding/json"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/gowiki-api/models"
+	"fmt"
 	"net/http"
-	"time"
 )
 
 // Fetch all User
@@ -14,7 +12,7 @@ func UsersIndex(write http.ResponseWriter, request *http.Request) {
 	write.Header().Set("Content-type", "application/json;charset=UTF-8")
 	write.WriteHeader(http.StatusOK)
 	//TODO function allUser()
-	json.NewEncoder(write).Encode(Users.AllUser())
+	// json.NewEncoder(write).Encode(Users.AllUser())
 }
 
 // Create a User
@@ -42,6 +40,9 @@ var Users = map[string]string{
 // Auth the user
 // Return Cookie with JWT string
 func AuthUsers(write http.ResponseWriter, request *http.Request) {
+
+	fmt.Println("test")
+
 	var creds Credentials
 	err := json.NewDecoder(request.Body).Decode(&creds)
 
@@ -57,30 +58,32 @@ func AuthUsers(write http.ResponseWriter, request *http.Request) {
 		write.WriteHeader(http.StatusUnauthorized)
 	}
 
-	// Expiration Time Token
-	expirationTime := time.Now().Add(5 * time.Minute)
+	/*
+		// Expiration Time Token
+		expirationTime := time.Now().Add(5 * time.Minute)
 
-	//Create the JWT Claims
-	claims := &jwt.Claims{
-		Username: creds.Username,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expirationTime.Unix(),
-		},
-		Valid(StandardClaims),
-	}
+		//Create the JWT Claims
+		claims := &jwt.Claims{
+			Username: creds.Username,
+			StandardClaims: jwt.StandardClaims{
+				ExpiresAt: expirationTime.Unix(),
+			},
+			Valid(StandardClaims),
+		}
 
-	// declare the JWT Token
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(jwtKey)
-	if err != nil {
-		write.WriteHeader(http.StatusInternalServerError)
-		return
-	}
+		// declare the JWT Token
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+		tokenString, err := token.SignedString(jwtKey)
+		if err != nil {
+			write.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 
-	// define the cookie
-	http.SetCookie(write, &http.Cookie{
-		Name:    "token",
-		Value:   tokenString,
-		Expires: expirationTime,
-	})
+		// define the cookie
+		http.SetCookie(write, &http.Cookie{
+			Name:    "token",
+			Value:   tokenString,
+			Expires: expirationTime,
+		})
+	*/
 }
