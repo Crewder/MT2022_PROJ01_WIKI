@@ -2,10 +2,35 @@
 
 *Camille Arsac, Rémi Coufourier, Florian Leroy et Steven Nativel*
 
-## Description du projet
+<a name="description"/>
+
+## 1 - Description du projet
 
 Une API qui gère des wikis. On peut se connecter, créer un compte, créer un article, le modifier et mettre des commentaires.
-## Pré requis
+
+### Table de contenu
+
+* [1. Description](#description)
+   * [1.1 Pré requis](#required)
+   * [1.2 Lancement du projet](#launch)
+* [2. Requete](#request)
+* [3. Article](#article)
+   * [3.1 Création d'un article](#createarticle)
+   * [3.2 Mise a jour d'un article](#updatearticle)
+   * [3.3 Récupération d'un article](#fetcharticle)
+   * [3.4 Récupération de tout les articles](#fetchallarticle)
+* [4. Commentaire](#comment)
+    * [4.1 Création d'un commentaire](#createcomment)
+* [5. Utilisateur](#user)
+    * [5.1 Creation d'un utilisateur](#createuser)
+    * [5.2 Récuperation des utilisateurs](#fetchuser)
+    * [5.3 Connexion utilisateur](#Auth)
+* [5. Modèle de données ](#models)
+    
+
+<a name="required"/>
+
+### Pré requis
 
 **GORM**
 ```
@@ -22,13 +47,16 @@ go get -u github.com/gorilla/mux
 ```
 go get github.com/joho/godotenv
 ```
+<a name="launch"/>
 
 ## Lancement de l'application 
 ```
 go run
 ```
 
-## Table de contenu
+
+
+<a name="request"/>
 
 # Requetes
 
@@ -50,22 +78,117 @@ go run
 |GET| api/user/ | Récupération des users |
 |POST| api/auth/ | Connexion utilisateur |
 
+<a name="article"/>
+
 # Article
+
+<a name="createarticle"/>
+
 ## Création d'un article
+#### Request Body
+```
+```
+#### Request Response
+```
+```
+
+<a name="updatearticle"/>
 
 ## Update d'un article
+#### parametre
+``` 
+```
+#### Request Body
+```
+```
+#### Request Response
+```
+```
+<a name="fetcharticle"/>
 
 ## Récupération d'un article
+#### parametre
+```
+```
+#### Request Body
+```
+```
+#### Request Response
+```
+```
+
+<a name="fetchallarticle"/>
 
 ## Récupération de tout les articles
+#### Request Body
+```
+```
+#### Request Response
+```
+```
+
+<a name="comment"/>
 
 # Commentaire
+
+<a name="createcomment"/>
+
 ## Création d'un commentaire
+#### Request Body
+```
+```
+#### Request Response
+```
+```
+
+<a name="user"/>
 
 # Utilisateur
+
+<a name="createuser"/>
+
+
 ## Création d'un user
+#### Request Body
+```json
+{
+    "Email":"string",
+    "Username":"string"
+}
+```
+#### Request Response
+```json
+{
+    "Email":"string",
+    "Username":"string"
+}
+```
+
+<a name="fetchuser"/>
+
 ## Récupération des users
+#### Request Body
+```
+```
+#### Request Response
+```
+```
+
+<a name="Auth"/>
+
 ## Connexion utilisateur
+#### Request Body
+```json
+{
+    "Email":"string",
+    "Username":"string"
+}
+```
+#### Request Response
+```
+```
+
+<a name="models"/>
 
 
 # Modèle de données
