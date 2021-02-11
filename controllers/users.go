@@ -3,7 +3,9 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"net/http"
+	"time"
 )
 
 // Fetch all User
@@ -20,6 +22,12 @@ func CreateUsers(write http.ResponseWriter, request *http.Request) {
 
 	write.Header().Set("Content-type", "application/json;charset=UTF-8")
 	write.WriteHeader(http.StatusOK)
+}
+
+// Struct to encode JWT
+type Claims struct {
+	Username string `json:"username"`
+	jwt.StandardClaims
 }
 
 //Create JWT Key
@@ -58,32 +66,29 @@ func AuthUsers(write http.ResponseWriter, request *http.Request) {
 		write.WriteHeader(http.StatusUnauthorized)
 	}
 
-	/*
-		// Expiration Time Token
-		expirationTime := time.Now().Add(5 * time.Minute)
+	// Expiration Time Token
+	expirationTime := time.Now().Add(5 * time.Minute)
 
-		//Create the JWT Claims
-		claims := &jwt.Claims{
-			Username: creds.Username,
-			StandardClaims: jwt.StandardClaims{
-				ExpiresAt: expirationTime.Unix(),
-			},
-			Valid(StandardClaims),
-		}
+	//Create the JWT Claims
+	claims := &Claims{
+		Username: creds.Username,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expirationTime.Unix(),
+		},
+	}
 
-		// declare the JWT Token
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-		tokenString, err := token.SignedString(jwtKey)
-		if err != nil {
-			write.WriteHeader(http.StatusInternalServerError)
-			return
-		}
+	// declare the JWT Token
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString(jwtKey)
+	if err != nil {
+		write.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
-		// define the cookie
-		http.SetCookie(write, &http.Cookie{
-			Name:    "token",
-			Value:   tokenString,
-			Expires: expirationTime,
-		})
-	*/
+	// define the cookie
+	http.SetCookie(write, &http.Cookie{
+		Name:    "token",
+		Value:   tokenString,
+		Expires: expirationTime,
+	})
 }
