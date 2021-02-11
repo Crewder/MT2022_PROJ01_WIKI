@@ -85,6 +85,9 @@ go run
 <a name="createarticle"/>
 
 ## Création d'un article
+
+**POST** - Création d'un article
+
 #### Request Body
 ```
 ```
@@ -95,9 +98,16 @@ go run
 <a name="updatearticle"/>
 
 ## Update d'un article
-#### parametre
-``` 
-```
+
+**PUT** - Update de l'article
+
+#### Parameters
+
+| Name |    Type |Description|
+|--|--|--|
+|Article_id| int| Id de l'article. Required |
+
+
 #### Request Body
 ```
 ```
@@ -107,9 +117,15 @@ go run
 <a name="fetcharticle"/>
 
 ## Récupération d'un article
-#### parametre
-```
-```
+
+**GET** - recuperation d'un article
+
+#### Parameters
+
+| Name |    Type |Description|
+|--|--|--|
+|Article_id| int| Id de l'article. Required |
+
 #### Request Body
 ```
 ```
@@ -120,6 +136,9 @@ go run
 <a name="fetchallarticle"/>
 
 ## Récupération de tout les articles
+
+**GET** - Récuperation de tout les articles
+
 #### Request Body
 ```
 ```
@@ -134,6 +153,9 @@ go run
 <a name="createcomment"/>
 
 ## Création d'un commentaire
+
+**POST** - Création d'un commentaire
+
 #### Request Body
 ```
 ```
@@ -147,8 +169,10 @@ go run
 
 <a name="createuser"/>
 
-
 ## Création d'un user
+
+**POST** - Création d'un User
+
 #### Request Body
 ```json
 {
@@ -177,6 +201,9 @@ go run
 <a name="Auth"/>
 
 ## Connexion utilisateur
+
+**POST** - Connexion d'un utilisateur
+
 #### Request Body
 ```json
 {
