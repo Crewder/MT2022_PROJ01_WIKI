@@ -1,12 +1,16 @@
 package config
 
 import (
-	"github.com/gowiki-api/models"
+	"log"
+	"os"
+
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"log"
-	"os"
+)
+
+var (
+	db *gorm.DB
 )
 
 func goDotEnvVariable(key string) string {
@@ -22,7 +26,6 @@ func goDotEnvVariable(key string) string {
 func DatabaseInit() {
 	var err error
 
-	var db *gorm.DB
 	var userDb = goDotEnvVariable("USER_DB")
 	var passwordDb = goDotEnvVariable("PASSWORD_DB")
 	var portDb = goDotEnvVariable("PORT_DB")
@@ -34,7 +37,8 @@ func DatabaseInit() {
 		log.Fatal(err)
 	}
 
-	db.AutoMigrate(&models.User{})
-	db.AutoMigrate(&models.Article{})
-	db.AutoMigrate(&models.Comment{})
+}
+
+func GetDB() *gorm.DB {
+	return db
 }
