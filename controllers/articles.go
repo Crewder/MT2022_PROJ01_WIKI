@@ -13,7 +13,6 @@ import (
 func ArticleCreate(w http.ResponseWriter, r *http.Request) {
 
 	// TODO: Récuperation ID User pour l'insertion dans la base
-	// A CHECK changement au niveau des call a la bases
 
 	w.Header().Set("content-type", "application/json;json;charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
