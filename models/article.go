@@ -1,7 +1,6 @@
 package models
 
 import (
-	"github.com/gowiki-api/config"
 	"gorm.io/gorm"
 )
 
@@ -14,8 +13,6 @@ type Article struct {
 }
 
 type Articles []Article
-
-var db = config.GetDB()
 
 func init() {
 	db.AutoMigrate(&Article{})

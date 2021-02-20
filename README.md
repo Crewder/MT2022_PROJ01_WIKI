@@ -70,7 +70,7 @@ go run
 
 | Méthodes |    Endpoint |Action|
 |--|--|--|
-|POST| api/comment/ | Création d'un commentaire |
+|POST| comment/create | Création d'un commentaire |
 
 | Méthodes |    Endpoint |Action|
 |--|--|--|
@@ -223,12 +223,21 @@ http://localhost:8080/articles/view
 ## Création d'un commentaire
 
 **POST** - Création d'un commentaire
-
+#### Request Url
+```
+http://localhost:8080/comment/create
+```
 #### Request Body
 ```
+{
+    "UserId": 1,
+    "ArticleId": 2,
+    "comment": "J'aime les pistacles"
+}
 ```
 #### Request Response
 ```
+null
 ```
 
 <a name="user"/>

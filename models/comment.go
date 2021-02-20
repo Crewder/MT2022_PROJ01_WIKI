@@ -2,6 +2,7 @@ package models
 
 import (
 	"gorm.io/gorm"
+	"log"
 )
 
 type Comment struct {
@@ -14,3 +15,14 @@ type Comment struct {
 }
 
 type Comments []Comment
+
+func init() {
+	db.AutoMigrate(&Comment{})
+}
+
+func NewComment(comment *Comment) {
+	if comment == nil {
+		log.Fatal(comment)
+	}
+	db.Create(&comment)
+}
