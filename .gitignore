@@ -19,3 +19,5 @@ ApexSQL
 .env
 .gitignore
 *.DS_Store
+
+.idea

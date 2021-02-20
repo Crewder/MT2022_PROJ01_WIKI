@@ -89,23 +89,17 @@ go run
 **POST** - Création d'un article
 
 #### Parameters
-```
+
 | Name |    Type |Description|
 |--|--|--|
 |id| int| Id de l'article |
-|--|--|--|
 |created_at| date| Date de création |
-|--|--|--|
 |updated_at| date| date de mise à jour |
-|--|--|--|
 |deleted_at| date| date de suppretion |
-|--|--|--|
 |user_id| int| Id de l'utilisateur actif. Required |
-|--|--|--|
 |title| string| titre de l'article. Required |
-|--|--|--|
 |content| string| contenu de l'article. Required |
-```
+
 #### Request URL
 
 ```
