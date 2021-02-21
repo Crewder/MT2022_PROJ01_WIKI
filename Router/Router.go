@@ -13,7 +13,8 @@ func Router() http.Handler {
 
 	// -------- Public route  --------//
 
-	router.Post("/auth", controllers.AuthUsers) //		"/auth" - Authentificate by credentials
+	router.Post("/auth", controllers.AuthUsers)        //		"/auth" - Authentificate by credentials
+	router.Post("/createuser", controllers.CreateUser) // " /Createuser" - Create a User and hash password
 
 	//router.GET("/article/{id}/view", controllers.ArticleView)
 	//router.POST.("/user",controllers.UserCreate)

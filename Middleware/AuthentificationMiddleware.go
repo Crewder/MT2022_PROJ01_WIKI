@@ -12,7 +12,6 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 		Services.ExtractCookieAndVerifyToken(write, request)
 
 		// Call the next handler
-
 		next.ServeHTTP(write, request)
 	})
 	return fn

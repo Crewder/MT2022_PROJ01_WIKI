@@ -3,6 +3,7 @@ package models
 import (
 	"github.com/gowiki-api/config"
 	"gorm.io/gorm"
+	"log"
 )
 
 var db *gorm.DB
@@ -19,6 +20,15 @@ func init() {
 	config.DatabaseInit()
 	db = config.GetDB()
 	db.AutoMigrate(&User{})
+}
+
+func NewUser(u *User) {
+	db = config.GetDB()
+
+	if u == nil {
+		log.Fatal(u)
+	}
+	db.Create(&u)
 }
 
 func GetAllUsers() []User {
