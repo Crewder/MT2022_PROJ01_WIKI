@@ -11,7 +11,7 @@ func CSRFMiddleware(next http.Handler) http.Handler {
 			[]byte("Ceci est un secret et non un lapins"),
 			csrf.RequestHeader("Authenticity-Token"),
 			csrf.FieldName("authenticity_token"),
-			csrf.CookieName("X-CSRF-TOKEN"),
+			csrf.CookieName("X-CSRF-Token"),
 		)
 		// Call the next handler
 		next.ServeHTTP(write, request)

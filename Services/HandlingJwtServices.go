@@ -28,7 +28,6 @@ func CreateToken(write http.ResponseWriter, creds Credentials) (http.ResponseWri
 	claims := &Claims{
 		Email: creds.Email,
 		StandardClaims: jwt.StandardClaims{
-			//TODO Check createuser (Validation or not)
 			NotBefore: time.Now().Unix(),
 			ExpiresAt: expirationTime.Unix(),
 			IssuedAt:  time.Now().Unix(),
@@ -117,4 +116,14 @@ func ExtractCookieAndVerifyToken(write http.ResponseWriter, request *http.Reques
 		return nil, nil
 	}
 	return tkn, err
+}
+
+func ClearSession(response http.ResponseWriter) {
+	cookie := &http.Cookie{
+		Name:   "AuthToken",
+		Value:  "",
+		Path:   "/",
+		MaxAge: -1,
+	}
+	http.SetCookie(response, cookie)
 }

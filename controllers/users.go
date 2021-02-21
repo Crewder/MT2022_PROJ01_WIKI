@@ -6,13 +6,10 @@ import (
 	"github.com/gowiki-api/Tools"
 	"github.com/gowiki-api/models"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 	"io/ioutil"
 	"log"
 	"net/http"
 )
-
-var db *gorm.DB
 
 // Struct for the request body
 type Credentials struct {
@@ -41,6 +38,8 @@ func CreateUser(write http.ResponseWriter, request *http.Request) {
 	err = json.Unmarshal(body, &article)
 
 	models.NewUser(user)
+
+	write.WriteHeader(http.StatusOK)
 }
 
 // Return Cookie with JWT string
@@ -63,5 +62,10 @@ func AuthUsers(write http.ResponseWriter, request *http.Request) {
 
 	Services.CreateToken(write, Services.Credentials(creds))
 
+	write.WriteHeader(http.StatusOK)
+}
+
+func Logout(write http.ResponseWriter, request *http.Request) {
+	Services.ClearSession(write)
 	write.WriteHeader(http.StatusOK)
 }
