@@ -1,42 +1,33 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi"
+	"github.com/gowiki-api/Middleware"
 	"github.com/gowiki-api/Services"
 	"github.com/gowiki-api/controllers"
 	"net/http"
 )
 
 func main() {
-	router := InitRouter()
+	router := Router()
 	http.ListenAndServe(":8080", router)
 }
 
-func InitRouter() *mux.Router {
+func Router() http.Handler {
 
-	router := mux.NewRouter().StrictSlash(true)
+	router := chi.NewRouter()
 
-	// -------- Route Without Middleware Check --------//
+	// -------- Public route  --------//
 
-	// router.Path("/").HandlerFunc(controllers.Main)
-	//router.Methods("POST").Path("/user").Name("CreateUser").HandlerFunc(controllers.UserCreate)
-	router.Methods("POST").Path("/auth").Name("auth").HandlerFunc(controllers.AuthUsers)
+	router.Post("/auth", controllers.AuthUsers) //"/auth" - Authentificate by credentials
 
-	var handler http.Handler
-	AuthMiddleware := Services.AuthentificationMiddleware(handler)
-	router.Use(AuthMiddleware)
+	// -------- Private Route  --------//
+	// Todo middleware Cors - XSS - CSRF
 
-	// -------- Route With Middleware Check --------//
+	PrivateRouter := router.Group(nil)
+	PrivateRouter.Use(Middleware.AuthentificationMiddleware)
 
-	/*router.Methods("POST").Path("/article").Name("create").HandlerFunc(controllers.ArticleCreate)
-	router.Methods("PUT").Path("/article/{id}").Name("Update").HandlerFunc(controllers.ArticleUpdate)
-	router.Methods("POST").Path("/comment").Name("CreateComment").HandlerFunc(controllers.CommentCreate).Subrouter().Use(AuthMiddleware)
-	*/
-
-	router.Methods("POST").Path("/refresh").Name("refresh").HandlerFunc(Services.RefreshToken)
-	/*
-		router.Methods("GET").Path("/article/{id}/view").Name("View").HandlerFunc(controllers.ArticleView)
-		router.Methods("GET").Path("/user/{id}").Name("ViewUser").HandlerFunc(controllers.UserView)*/
+	PrivateRouter.Post("/refresh", Services.RefreshToken) // "/refresh" - refresh the Token
 
 	return router
 }

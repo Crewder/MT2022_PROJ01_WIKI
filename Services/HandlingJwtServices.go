@@ -7,7 +7,7 @@ import (
 )
 
 //todo a set dans le .env
-var jwtKey = []byte("Ceci est un lapin et non un secret")
+var JwtKey = []byte("Ceci est un lapin et non un secret")
 
 // Struct to encode JWT
 type Claims struct {
@@ -23,7 +23,7 @@ type Credentials struct {
 
 func CreateToken(write http.ResponseWriter, creds Credentials) (http.ResponseWriter, error) {
 	var err error
-	expirationTime := time.Now().Add(1 * time.Minute)
+	expirationTime := time.Now().Add(5 * time.Minute)
 
 	//Claims = TokenDetails
 	claims := &Claims{
@@ -37,7 +37,7 @@ func CreateToken(write http.ResponseWriter, creds Credentials) (http.ResponseWri
 	}
 	// Generate the JWT Token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(jwtKey)
+	tokenString, err := token.SignedString(JwtKey)
 
 	if err != nil {
 		write.WriteHeader(http.StatusInternalServerError)
@@ -59,7 +59,7 @@ func RefreshToken(write http.ResponseWriter, request *http.Request) {
 	//Todo recuperation du claims du middleware
 	claims := &Claims{}
 
-	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 30*time.Minute {
+	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 30*time.Second {
 		write.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -67,13 +67,13 @@ func RefreshToken(write http.ResponseWriter, request *http.Request) {
 	//todo refacto Detailtoken ( refresh / create )
 
 	// set the new detail token
-	expirationTime := time.Now().Add(50 * time.Minute)
+	expirationTime := time.Now().Add(5 * time.Minute)
 	claims.ExpiresAt = expirationTime.Unix()
 	claims.IssuedAt = time.Now().Unix()
 
 	// Generate the JWT Token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(jwtKey)
+	tokenString, err := token.SignedString(JwtKey)
 
 	if err != nil {
 		write.WriteHeader(http.StatusInternalServerError)
