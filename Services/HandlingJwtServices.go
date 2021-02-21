@@ -23,9 +23,8 @@ type Credentials struct {
 
 func CreateToken(write http.ResponseWriter, creds Credentials) (http.ResponseWriter, error) {
 	var err error
-	expirationTime := time.Now().Add(5 * time.Minute)
+	expirationTime := time.Now().Add(1 * time.Minute)
 
-	//Claims = TokenDetails
 	claims := &Claims{
 		Email: creds.Email,
 		StandardClaims: jwt.StandardClaims{
@@ -56,7 +55,8 @@ func CreateToken(write http.ResponseWriter, creds Credentials) (http.ResponseWri
 
 func RefreshToken(write http.ResponseWriter, request *http.Request) {
 
-	//Todo recuperation du claims du middleware
+	ExtractCookieAndVerifyToken(write, request)
+
 	claims := &Claims{}
 
 	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 30*time.Second {
@@ -64,16 +64,16 @@ func RefreshToken(write http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	//todo refacto Detailtoken ( refresh / create )
-
 	// set the new detail token
-	expirationTime := time.Now().Add(5 * time.Minute)
+	//TODO Recuperation de l'email
+	// claims.email := Cookie.EMAIL
+	expirationTime := time.Now().Add(30 * time.Minute)
 	claims.ExpiresAt = expirationTime.Unix()
 	claims.IssuedAt = time.Now().Unix()
 
 	// Generate the JWT Token
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(JwtKey)
+	NewToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := NewToken.SignedString(JwtKey)
 
 	if err != nil {
 		write.WriteHeader(http.StatusInternalServerError)
@@ -87,4 +87,34 @@ func RefreshToken(write http.ResponseWriter, request *http.Request) {
 		Expires:  expirationTime,
 		HttpOnly: true,
 	})
+}
+
+func ExtractCookieAndVerifyToken(write http.ResponseWriter, request *http.Request) (*jwt.Token, error) {
+	c, err := request.Cookie("AuthToken")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			write.WriteHeader(http.StatusUnauthorized)
+			return nil, nil
+		}
+		write.WriteHeader(http.StatusBadRequest)
+		return nil, nil
+	}
+	tknStr := c.Value
+	claims := &Claims{}
+	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+		return JwtKey, nil
+	})
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			write.WriteHeader(http.StatusUnauthorized)
+			return nil, nil
+		}
+		write.WriteHeader(http.StatusBadRequest)
+		return nil, nil
+	}
+	if !tkn.Valid {
+		write.WriteHeader(http.StatusUnauthorized)
+		return nil, nil
+	}
+	return tkn, err
 }
