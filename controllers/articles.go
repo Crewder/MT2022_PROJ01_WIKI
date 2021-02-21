@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -11,8 +10,6 @@ import (
 )
 
 func ArticleCreate(w http.ResponseWriter, r *http.Request) {
-
-	// TODO: Récuperation ID User pour l'insertion dans la base
 
 	w.Header().Set("content-type", "application/json;json;charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
@@ -26,8 +23,6 @@ func ArticleCreate(w http.ResponseWriter, r *http.Request) {
 	var article models.Article
 
 	err = json.Unmarshal(body, &article)
-
-	fmt.Fprint(w, &article)
 
 	models.NewArticle(&article)
 

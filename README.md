@@ -100,16 +100,16 @@ go run
 |--|--|--|
 |deleted_at| date| date de suppretion |
 |--|--|--|
-|user_id| int| Id de l'utilisateur actif. Required |
+|user_id| int| Id de l'utilisateur actif. Requis |
 |--|--|--|
-|title| string| titre de l'article. Required |
+|title| string| titre de l'article. Requis |
 |--|--|--|
-|content| string| contenu de l'article. Required |
+|content| string| contenu de l'article. Requis |
 ```
 #### Request URL
 
 ```
-http://localhost/article
+http://localhost:8080/article
 ```
 
 #### Request Body
