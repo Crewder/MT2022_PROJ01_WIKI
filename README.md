@@ -10,9 +10,13 @@ go get -u gorm.io/gorm
 go get -u gorm.io/driver/mysql
 ```
 
-**Dépendance Router**
+**Dépendance **
 ```
-go get -u github.com/gorilla/mux
+go get -u github.com/gorilla/csrf
+go get -u github.com/go-chi/chi
+go get -u github.com/go-chi/cors
+go get -u github.com/dgrijalva/jwt-go
+go get -u golang.org/x/crypto/bcrypt
 ```
 
 **Variables d'environnement**
