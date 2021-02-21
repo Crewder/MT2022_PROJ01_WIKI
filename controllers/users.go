@@ -2,82 +2,57 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gowiki-api/models"
 	"net/http"
 	"time"
 )
 
-// Fetch all User
-func UsersIndex(write http.ResponseWriter, request *http.Request) {
-
-	write.Header().Set("Content-type", "application/json;charset=UTF-8")
-	write.WriteHeader(http.StatusOK)
-	//TODO function allUser()
-	// json.NewEncoder(write).Encode(Users.AllUser())
-}
-
-// Create a User
-func CreateUsers(write http.ResponseWriter, request *http.Request) {
-
-	write.Header().Set("Content-type", "application/json;charset=UTF-8")
-	write.WriteHeader(http.StatusOK)
-}
-
 // Struct to encode JWT
 type Claims struct {
-	Username string `json:"username"`
+	Email string `json:"email"`
 	jwt.StandardClaims
 }
 
-//Create JWT Key
 var jwtKey = []byte("Ceci est un lapin et non un secret")
 
-// Create a struct for the request body
+// Struct for the request body
 type Credentials struct {
 	Password string `json:"password"`
-	Username string `json:"username"`
+	Email    string `json:"email"`
 }
 
-// Seed
-var Users = map[string]string{
-	"user1": "password1",
-	"user2": "password2",
-}
-
-// Auth the user
 // Return Cookie with JWT string
 func AuthUsers(write http.ResponseWriter, request *http.Request) {
-
-	fmt.Println("test")
-
 	var creds Credentials
 	err := json.NewDecoder(request.Body).Decode(&creds)
+	Users, db := models.GetUserByEmail(creds.Email)
 
-	// Verify the structure of the body
-	if err != nil {
+	if err != nil || db.RowsAffected != 1 {
 		write.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	// Verify Password
-	expectedPassword, ok := Users[creds.Username]
-	if !ok || expectedPassword != creds.Password {
+	if Users.Password != creds.Password {
 		write.WriteHeader(http.StatusUnauthorized)
+		return
 	}
 
-	// Expiration Time Token
-	expirationTime := time.Now().Add(5 * time.Minute)
+	expirationTime := time.Now().Add(15 * time.Minute)
 
 	//Create the JWT Claims
+	//Claims will be include in the payload token
 	claims := &Claims{
-		Username: creds.Username,
+		Email: creds.Email,
 		StandardClaims: jwt.StandardClaims{
+			//TODO Check createuser (Validation or not)
+			NotBefore: time.Now().Unix(),
 			ExpiresAt: expirationTime.Unix(),
+			IssuedAt:  time.Now().Unix(),
 		},
 	}
 
-	// declare the JWT Token
+	// Generate the JWT Token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
@@ -85,10 +60,10 @@ func AuthUsers(write http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	// define the cookie
 	http.SetCookie(write, &http.Cookie{
-		Name:    "token",
-		Value:   tokenString,
-		Expires: expirationTime,
+		Name:     "AuthToken",
+		Value:    tokenString,
+		Expires:  expirationTime,
+		HttpOnly: true,
 	})
 }
