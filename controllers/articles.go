@@ -1,16 +1,24 @@
 package controllers
 
 import (
-	"fmt"
+	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/gowiki-api/models"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
 )
 
-func Main(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "hello world", r.URL.Path[1:])
+func ArticleCreate(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var article models.Article
+	err = json.Unmarshal(body, &article)
+	models.NewArticle(&article)
+	coreResponse(w, http.StatusCreated, nil)
 }
 
 func GetArticles(w http.ResponseWriter, r *http.Request) {

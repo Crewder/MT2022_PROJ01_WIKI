@@ -2,6 +2,7 @@ package models
 
 import (
 	"gorm.io/gorm"
+	"log"
 )
 
 type Article struct {
@@ -28,4 +29,11 @@ func GetArticleById(Id int64) *Article {
 	var article Article
 	db.Where("ID = ?", Id).Find(&article)
 	return &article
+}
+
+func NewArticle(a *Article) {
+	if a == nil {
+		log.Fatal(a)
+	}
+	db.Create(&a)
 }
