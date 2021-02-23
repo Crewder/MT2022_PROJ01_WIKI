@@ -22,11 +22,11 @@ func Router() http.Handler {
 	}))
 
 	// -------- Public route  --------//
-	router.Post("/user/login", controllers.AuthUsers)       //		"/auth" - Authentificate by credentials
-	router.Post("/user/createuser", controllers.CreateUser) // 		"/Createuser" - Create a User and hash password
-	router.Post("/user/logout", controllers.Logout)         // 		"/Logout" - Disconnect and suppress token
-	//router.Get("/article/{id}/view", controllers.ArticleView)
-	//router.Post.("/user",controllers.UserCreate)
+	router.Post("/user/login", controllers.AuthUsers)   //		"/auth" - Authentificate by credentials
+	router.Post("/user/create", controllers.CreateUser) // 		"/Createuser" - Create a User and hash password
+	router.Post("/user/logout", controllers.Logout)     // 		"/Logout" - Disconnect and suppress token
+	router.Get("/article/{id}", controllers.GetArticle)
+	router.Get("/articles", controllers.GetArticles)
 
 	// -------- Private Route  --------//
 	PrivateRouter := router.Group(nil)
@@ -34,11 +34,11 @@ func Router() http.Handler {
 	PrivateRouter.Use(middleware.CSRFMiddleware)             // Verify The CSRF TOKEN
 
 	PrivateRouter.Post("/user/refresh", services.RefreshToken) // 	"/refresh" - refresh the Token
-	// PrivateRouter.Post.("/article", controllers.ArticleCreate)
-	// PrivateRouter.Put.("/article/{id}", controllers.ArticleUpdate)
-	// PrivateRouter.Post.("/comment", controllers.CommentCreate)
-	// PrivateRouter.Get("/article/{id}/view", controllers.ArticleView)
-	// PrivateRouter.Get("/user/{id}",controllers.UserView)
+	PrivateRouter.Post("/article/create", controllers.ArticleCreate)
+	//PrivateRouter.Put("/article/{id}", controllers.ArticleUpdate)
+	PrivateRouter.Post("/comment/create", controllers.CommentCreate)
+	PrivateRouter.Get("/users", controllers.GetUsers)
+	PrivateRouter.Get("/user/{id}", controllers.GetUser)
 
 	return router
 }

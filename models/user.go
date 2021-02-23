@@ -1,13 +1,10 @@
 package models
 
 import (
-	"github.com/gowiki-api/config"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
 )
-
-var db *gorm.DB
 
 type User struct {
 	gorm.Model
@@ -18,18 +15,7 @@ type User struct {
 }
 
 func init() {
-	config.DatabaseInit()
-	db = config.GetDB()
 	db.AutoMigrate(&User{})
-}
-
-func NewUser(u *User) {
-	db = config.GetDB()
-
-	if u == nil {
-		log.Fatal(u)
-	}
-	db.Create(&u)
 }
 
 func GetAllUsers() []User {
@@ -42,6 +28,13 @@ func GetUserById(Id int64) *User {
 	var getUser User
 	db.Where("ID = ?", Id).Find(&getUser)
 	return &getUser
+}
+
+func NewUser(u *User) {
+	if u == nil {
+		log.Fatal(u)
+	}
+	db.Create(&u)
 }
 
 func GetUserByEmail(Email string) *User {
