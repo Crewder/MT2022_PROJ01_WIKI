@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/gowiki-api/models"
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/http"

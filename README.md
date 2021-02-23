@@ -18,12 +18,12 @@ Une API qui gère des wikis. On peut se connecter, créer un compte, créer un a
    * [3.1 Création d'un article](#createarticle)
    * [3.2 Mise a jour d'un article](#updatearticle)
    * [3.3 Récupération d'un article](#fetcharticle)
-   * [3.4 Récupération de tout les articles](#fetchallarticle)
+   * [3.4 Récupération de tous les articles](#fetchallarticle)
 * [4. Commentaire](#comment)
     * [4.1 Création d'un commentaire](#createcomment)
 * [5. Utilisateur](#user)
     * [5.1 Creation d'un utilisateur](#createuser)
-    * [5.2 Récuperation des utilisateurs](#fetchuser)
+    * [5.2 Récupération des utilisateurs](#fetchuser)
     * [5.3 Connexion utilisateur](#Auth)
 * [5. Modèle de données ](#models)
     
@@ -64,8 +64,8 @@ go run
 |--|--|--|
 |POST | api/article  | Création d'un article |
 |PUT | api/article/{id} | Update d'un article  |
-|GET | api/article/{id} | Récupération d'un article |
-|GET | api/allarticle | Récupération de tout les articles |
+|GET | article/{id}/view | Récupération d'un article |
+|GET | articles/view | Récupération de tous les articles |
 
 
 | Méthodes |    Endpoint |Action|
@@ -122,6 +122,7 @@ http://localhost:8080/article
 ```
 #### Request Response
 ```
+null
 ```
 
 <a name="updatearticle"/>
@@ -147,13 +148,7 @@ http://localhost:8080/article
 
 ## Récupération d'un article
 
-**GET** - recuperation d'un article
-
-#### Parameters
-
-| Name |    Type |Description|
-|--|--|--|
-|Article_id| int| Id de l'article. Required |
+**GET** - Récupérer un article
 
 #### Request Url
 ```
@@ -181,7 +176,11 @@ http://localhost:8080/article/1/view
 }
 ```
 
-**GET** - recuperation de tous les articles
+<a name="fetchallarticle"/>
+
+## Récupération de tout les articles
+
+**GET** - Récupérer tous les articles
 
 #### Request Url
 ```
@@ -228,19 +227,6 @@ http://localhost:8080/articles/view
         "Content": "orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
     }
 ]
-```
-
-<a name="fetchallarticle"/>
-
-## Récupération de tout les articles
-
-**GET** - Récuperation de tout les articles
-
-#### Request Body
-```
-```
-#### Request Response
-```
 ```
 
 <a name="comment"/>
