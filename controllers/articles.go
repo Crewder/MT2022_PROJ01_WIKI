@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"github.com/gorilla/mux"
-	"github.com/gowiki-api/models"
 	"encoding/json"
+	"github.com/go-chi/chi"
+	"github.com/gowiki-api/models"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -29,8 +29,8 @@ func GetArticles(w http.ResponseWriter, r *http.Request) {
 func GetArticle(w http.ResponseWriter, r *http.Request) {
 	var err error
 
-	vars := mux.Vars(r)
-	articleId := vars["id"]
+	articleId := chi.URLParam(r, "id")
+
 	ID, err := strconv.ParseInt(articleId, 0, 0)
 	if err != nil {
 		log.Fatal(err)

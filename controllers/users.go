@@ -2,14 +2,14 @@ package controllers
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi"
+	"github.com/gowiki-api/Tools"
 	"github.com/gowiki-api/models"
+	"github.com/gowiki-api/services"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
 	"strconv"
-	"github.com/gowiki-api/Tools"
-	"github.com/gowiki-api/services"
-	"golang.org/x/crypto/bcrypt"
 )
 
 // Struct for the request body
@@ -29,8 +29,8 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	var err error
 
-	vars := mux.Vars(r)
-	userId := vars["id"]
+	userId := chi.URLParam(r, "id")
+
 	ID, err := strconv.ParseInt(userId, 0, 0)
 	if err != nil {
 		log.Fatal(err)
@@ -41,7 +41,6 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 }
-
 
 func CreateUser(write http.ResponseWriter, request *http.Request) {
 	user := &models.User{}

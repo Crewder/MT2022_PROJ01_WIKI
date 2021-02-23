@@ -33,12 +33,12 @@ func Router() http.Handler {
 	PrivateRouter.Use(middleware.AuthentificationMiddleware) // Verify the JwtToken
 	PrivateRouter.Use(middleware.CSRFMiddleware)             // Verify The CSRF TOKEN
 
-	PrivateRouter.Post("/user/refresh", services.RefreshToken) // 	"/refresh" - refresh the Token
-	PrivateRouter.Post("/article/create", controllers.ArticleCreate)
+	router.Post("/user/refresh", services.RefreshToken) // 	"/refresh" - refresh the Token
+	router.Post("/article/create", controllers.ArticleCreate)
 	//PrivateRouter.Put("/article/{id}", controllers.ArticleUpdate)
-	PrivateRouter.Post("/comment/create", controllers.CommentCreate)
-	PrivateRouter.Get("/users", controllers.GetUsers)
-	PrivateRouter.Get("/user/{id}", controllers.GetUser)
+	router.Post("/comment/create", controllers.CommentCreate)
+	router.Get("/users", controllers.GetUsers)
+	router.Get("/user/{id}", controllers.GetUser)
 
 	return router
 }
