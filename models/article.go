@@ -1,13 +1,9 @@
 package models
 
 import (
-	"log"
-
-	"github.com/gowiki-api/config"
 	"gorm.io/gorm"
+	"log"
 )
-
-var db *gorm.DB
 
 type Article struct {
 	gorm.Model
@@ -19,14 +15,25 @@ type Article struct {
 
 type Articles []Article
 
+func init() {
+	db.AutoMigrate(&Article{})
+}
+
+func GetAllArticles() []Article {
+	var Articles []Article
+	db.Find(&Articles)
+	return Articles
+}
+
+func GetArticleById(Id int64) *Article {
+	var article Article
+	db.Where("ID = ?", Id).Find(&article)
+	return &article
+}
+
 func NewArticle(a *Article) {
-
-	db = config.GetDB()
-
 	if a == nil {
 		log.Fatal(a)
 	}
-
 	db.Create(&a)
-
 }
