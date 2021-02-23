@@ -4,6 +4,7 @@ import (
 	"github.com/gowiki-api/config"
 	"gorm.io/gorm"
 	"log"
+	"net/http"
 )
 
 var db *gorm.DB
@@ -37,14 +38,17 @@ func GetAllUsers() []User {
 	return Users
 }
 
-func GetUserById(Id int64) (*User, *gorm.DB) {
+func GetUserById(Id int64) *User {
 	var getUser User
-	db := db.Where("ID = ?", Id).Find(&getUser)
-	return &getUser, db
+	db.Where("ID = ?", Id).Find(&getUser)
+	return &getUser
 }
 
-func GetUserByEmail(Email string) (*User, *gorm.DB) {
+func GetUserByEmail(Email string) *User {
 	var getUser User
 	db := db.Where("email = ?", Email).Find(&getUser)
-	return &getUser, db
+	if db.RowsAffected != 1 {
+		log.Fatal(http.StatusBadRequest)
+	}
+	return &getUser
 }

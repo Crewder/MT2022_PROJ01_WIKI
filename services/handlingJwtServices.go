@@ -1,13 +1,14 @@
-package Services
+package services
 
 import (
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gowiki-api/Tools"
 	"net/http"
 	"time"
 )
 
 //todo a set dans le .env
-var JwtKey = []byte("Ceci est un lapin et non un secret")
+var JwtKey = Tools.GenerateARandomString()
 
 // Struct to encode JWT
 type Claims struct {

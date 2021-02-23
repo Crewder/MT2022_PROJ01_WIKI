@@ -2,11 +2,10 @@ package controllers
 
 import (
 	"encoding/json"
-	"github.com/gowiki-api/Services"
 	"github.com/gowiki-api/Tools"
 	"github.com/gowiki-api/models"
+	"github.com/gowiki-api/services"
 	"golang.org/x/crypto/bcrypt"
-	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -27,28 +26,21 @@ func CreateUser(write http.ResponseWriter, request *http.Request) {
 		write.WriteHeader(http.StatusInternalServerError)
 	}
 	user.Password = string(pass)
-
-	body, err := ioutil.ReadAll(request.Body)
-
 	if err != nil {
 		log.Fatal(err)
 	}
-	var article models.Article
-
-	err = json.Unmarshal(body, &article)
-
 	models.NewUser(user)
 
-	write.WriteHeader(http.StatusOK)
+	write.WriteHeader(http.StatusCreated)
 }
 
 // Return Cookie with JWT string
 func AuthUsers(write http.ResponseWriter, request *http.Request) {
 	var creds Credentials
 	err := json.NewDecoder(request.Body).Decode(&creds)
-	Users, db := models.GetUserByEmail(creds.Email)
+	Users := models.GetUserByEmail(creds.Email)
 
-	if err != nil || db.RowsAffected != 1 {
+	if err != nil {
 		write.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -60,12 +52,12 @@ func AuthUsers(write http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	Services.CreateToken(write, Services.Credentials(creds))
+	services.CreateToken(write, services.Credentials(creds))
 
 	write.WriteHeader(http.StatusOK)
 }
 
 func Logout(write http.ResponseWriter, request *http.Request) {
-	Services.ClearSession(write)
+	services.ClearSession(write)
 	write.WriteHeader(http.StatusOK)
 }

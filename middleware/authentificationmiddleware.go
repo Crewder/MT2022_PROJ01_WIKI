@@ -1,7 +1,7 @@
-package Middleware
+package middleware
 
 import (
-	"github.com/gowiki-api/Services"
+	"github.com/gowiki-api/services"
 	"net/http"
 )
 
@@ -9,7 +9,7 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 
 	fn := http.HandlerFunc(func(write http.ResponseWriter, request *http.Request) {
 
-		Services.ExtractCookieAndVerifyToken(write, request)
+		services.ExtractCookieAndVerifyToken(write, request)
 
 		// Call the next handler
 		next.ServeHTTP(write, request)
