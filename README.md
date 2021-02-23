@@ -70,7 +70,7 @@ go run
 
 | Méthodes |    Endpoint |Action|
 |--|--|--|
-|POST| api/comment/ | Création d'un commentaire |
+|POST| comment/create | Création d'un commentaire |
 
 | Méthodes |    Endpoint |Action|
 |--|--|--|
@@ -88,11 +88,41 @@ go run
 
 **POST** - Création d'un article
 
+#### Parameters
+```
+| Name |    Type |Description|
+|--|--|--|
+|id| int| Id de l'article |
+|--|--|--|
+|created_at| date| Date de création |
+|--|--|--|
+|updated_at| date| date de mise à jour |
+|--|--|--|
+|deleted_at| date| date de suppretion |
+|--|--|--|
+|user_id| int| Id de l'utilisateur actif. Requis |
+|--|--|--|
+|title| string| titre de l'article. Requis |
+|--|--|--|
+|content| string| contenu de l'article. Requis |
+```
+#### Request URL
+
+```
+http://localhost:8080/article
+```
+
 #### Request Body
 ```
+{
+    "UserId": 1,
+    "title": "Vache",
+    "content":"Vache est le nom vernaculaire donné à la femelle du mammifère domestique de l'espèce Bos taurus, un ruminant appartenant à la famille des bovidés, généralement porteur de deux cornes sur le front. Les individus mâles sont appelés taureaux et les jeunes, veaux. Une génisse ou vachette, appelée aussi taure au Québec ou dans le Poitou, est une vache qui n'a pas vêlé. Descendant de plusieurs sous-espèces d'aurochs, les bovins actuels (zébus compris) sont élevés pour produire du lait et de la viande, ou comme animaux de trait. En Inde, la vache est sacrée. Le mot vache vient du latin vacca, de même sens."
+}
 ```
 #### Request Response
 ```
+null
 ```
 
 <a name="updatearticle"/>
@@ -117,6 +147,8 @@ go run
 <a name="fetcharticle"/>
 
 ## Récupération d'un article
+
+**GET** - Récupérer un article
 
 #### Request Url
 ```
@@ -147,6 +179,8 @@ http://localhost:8080/article/1/view
 <a name="fetchallarticle"/>
 
 ## Récupération de tout les articles
+
+**GET** - Récupérer tous les articles
 
 #### Request Url
 ```
@@ -204,12 +238,21 @@ http://localhost:8080/articles/view
 ## Création d'un commentaire
 
 **POST** - Création d'un commentaire
-
+#### Request Url
+```
+http://localhost:8080/comment/create
+```
 #### Request Body
 ```
+{
+    "UserId": 1,
+    "ArticleId": 2,
+    "comment": "J'aime les pistacles"
+}
 ```
 #### Request Response
 ```
+null
 ```
 
 <a name="user"/>

@@ -15,7 +15,10 @@ func InitRouter() *mux.Router {
 
 	router := mux.NewRouter().StrictSlash(true)
 
-	router.Path("/").HandlerFunc(controllers.Main)
+	router.Methods("GET").Path("/article/{id}/view").Name("View Article").HandlerFunc(controllers.GetArticle)
+	router.Methods("GET").Path("/articles/view").Name("View Articles").HandlerFunc(controllers.GetArticles)
+	router.Methods("POST").Path("/comment/create").Name("CreateComment").HandlerFunc(controllers.CommentCreate)
+	router.Methods("POST").Path("/article").Name("create").HandlerFunc(controllers.ArticleCreate)
 
 	router.Methods("GET").Path("/article/{id}/view").Name("View Article").HandlerFunc(controllers.GetArticle)
 	router.Methods("GET").Path("/articles/view").Name("View Articles").HandlerFunc(controllers.GetArticles)
