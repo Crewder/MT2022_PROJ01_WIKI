@@ -93,7 +93,7 @@ go run
 **POST** - Création d'un article
 
 #### Parameters
-```
+
 | Name |    Type |Description|
 |--|--|--|
 |id| int| Id de l'article |
@@ -109,7 +109,7 @@ go run
 |title| string| titre de l'article. Requis |
 |--|--|--|
 |content| string| contenu de l'article. Requis |
-```
+
 #### Request URL
 
 ```
@@ -120,8 +120,8 @@ http://localhost:8080/article
 ```
 {
     "UserId": 1,
-    "title": "Vache",
-    "content":"Vache est le nom vernaculaire donné à la femelle du mammifère domestique de l'espèce Bos taurus, un ruminant appartenant à la famille des bovidés, généralement porteur de deux cornes sur le front. Les individus mâles sont appelés taureaux et les jeunes, veaux. Une génisse ou vachette, appelée aussi taure au Québec ou dans le Poitou, est une vache qui n'a pas vêlé. Descendant de plusieurs sous-espèces d'aurochs, les bovins actuels (zébus compris) sont élevés pour produire du lait et de la viande, ou comme animaux de trait. En Inde, la vache est sacrée. Le mot vache vient du latin vacca, de même sens."
+    "Title": "Vache",
+    "Content":"Vache est le nom vernaculaire donné à la femelle du mammifère domestique de l'espèce Bos taurus, un ruminant appartenant à la famille des bovidés, généralement porteur de deux cornes sur le front. Les individus mâles sont appelés taureaux et les jeunes, veaux. Une génisse ou vachette, appelée aussi taure au Québec ou dans le Poitou, est une vache qui n'a pas vêlé. Descendant de plusieurs sous-espèces d'aurochs, les bovins actuels (zébus compris) sont élevés pour produire du lait et de la viande, ou comme animaux de trait. En Inde, la vache est sacrée. Le mot vache vient du latin vacca, de même sens."
 }
 ```
 #### Request Response
@@ -139,14 +139,53 @@ null
 
 | Name |    Type |Description|
 |--|--|--|
-|Article_id| int| Id de l'article. Required |
+|id| int| Id de l'article |
+|--|--|--|
+|created_at| date| Date de création |
+|--|--|--|
+|updated_at| date| date de mise à jour |
+|--|--|--|
+|deleted_at| date| date de suppretion |
+|--|--|--|
+|user_id| int| Id de l'utilisateur actif. Requis |
+|--|--|--|
+|title| string| titre de l'article. Requis |
+|--|--|--|
+|content| string| contenu de l'article. Requis |
 
+#### Request Url
+```
+http://localhost:8080/article/7
+```
 
 #### Request Body
 ```
+{
+    "Title": "Vache épisode 2",
+    "Content":"Le retour de la vache episode deux on update l'article
+    Vache est le nom donné à la femelle du mammifère domestique de l'espèce Bos taurus, un ruminant appartenant à la famille des bovidés, généralement porteur de deux cornes sur le front. Les individus mâles sont appelés taureaux et les jeunes, veaux. Une génisse ou vachette, appelée aussi taure au Québec ou dans le Poitou, est une vache qui n'a pas vêlé. Descendant de plusieurs sous-espèces d'aurochs, les bovins actuels (zébus compris) sont élevés pour produire du lait et de la viande, ou comme animaux de trait. En Inde, la vache est sacrée. Le mot vache vient du latin vacca, de même sens."
+}
 ```
 #### Request Response
 ```
+{
+    "ID": 7,
+    "CreatedAt": "2021-02-26T19:04:43.446+01:00",
+    "UpdatedAt": "2021-02-26T19:48:54.829+01:00",
+    "DeletedAt": null,
+    "UserId": 1,
+    "User": {
+        "CreatedAt": "0001-01-01T00:00:00Z",
+        "UpdatedAt": "0001-01-01T00:00:00Z",
+        "DeletedAt": null,
+        "ID": 0,
+        "Name": "",
+        "Email": "",
+        "Password": ""
+    },
+    "Title": "La culture de la betrave",
+    "Content": "La puissance du part du Havre"
+}
 ```
 <a name="fetcharticle"/>
 
