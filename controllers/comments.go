@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"github.com/go-chi/chi"
 	"github.com/gowiki-api/models"
 	"io/ioutil"
 	"log"
@@ -17,4 +18,10 @@ func CommentCreate(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(body, &comment)
 	models.NewComment(&comment)
 	coreResponse(w, http.StatusCreated, nil)
+}
+
+func GetCommentsByArticle(w http.ResponseWriter, r *http.Request) {
+	articleId := chi.URLParam(r, "id")
+	comments := models.GetAllCommentsByArticle(articleId)
+	coreResponse(w, http.StatusOK, comments)
 }

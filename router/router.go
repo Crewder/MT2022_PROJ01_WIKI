@@ -38,6 +38,7 @@ func Router() http.Handler {
 	router.Post("/article/create", controllers.ArticleCreate)
 	router.Put("/article/{id}", controllers.ArticleUpdate)
 	router.Post("/comment/create", controllers.CommentCreate)
+	router.Get("/comment/{id}", controllers.GetCommentsByArticle)
 	router.Get("/users", controllers.GetUsers)
 	router.Get("/user/{id}", controllers.GetUser)
 

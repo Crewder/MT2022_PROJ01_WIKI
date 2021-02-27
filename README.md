@@ -21,6 +21,7 @@ Une API qui gère des wikis. On peut se connecter, créer un compte, créer un a
    * [3.4 Récupération de tous les articles](#fetchallarticle)
 * [4. Commentaire](#comment)
     * [4.1 Création d'un commentaire](#createcomment)
+    * [4.2 Récupération des commentaire lié à un artcile](#showcomments)
 * [5. Utilisateur](#user)
     * [5.1 Creation d'un utilisateur](#createuser)
     * [5.2 Récupération des utilisateurs](#fetchuser)
@@ -195,7 +196,7 @@ http://localhost:8080/article/7
 
 #### Request Url
 ```
-http://localhost:8080/article/1/view
+http://localhost:8080/article/1
 ```
 #### Request Response
 ```
@@ -227,7 +228,7 @@ http://localhost:8080/article/1/view
 
 #### Request Url
 ```
-http://localhost:8080/articles/view
+http://localhost:8080/articles
 ```
 #### Request Response
 ```
@@ -296,6 +297,57 @@ http://localhost:8080/comment/create
 #### Request Response
 ```
 null
+```
+
+<a name="showcomments"/>
+
+## Récupération des commentaires lié à un article
+
+**GET** - Récupération des commentaires lié à un article
+#### Request Url
+```
+http://localhost:8080/comment/2
+```
+#### Request Response
+```
+[
+    {
+        "ID": 1,
+        "CreatedAt": "2021-02-20T22:49:58.826+01:00",
+        "UpdatedAt": "2021-02-20T22:49:58.826+01:00",
+        "DeletedAt": null,
+        "UserId": 1,
+        "User": {
+            "CreatedAt": "0001-01-01T00:00:00Z",
+            "UpdatedAt": "0001-01-01T00:00:00Z",
+            "DeletedAt": null,
+            "ID": 0,
+            "Name": "",
+            "Email": "",
+            "Password": ""
+        },
+        "ArticleId": 2,
+        "Article": {
+            "ID": 0,
+            "CreatedAt": "0001-01-01T00:00:00Z",
+            "UpdatedAt": "0001-01-01T00:00:00Z",
+            "DeletedAt": null,
+            "UserId": 0,
+            "User": {
+                "CreatedAt": "0001-01-01T00:00:00Z",
+                "UpdatedAt": "0001-01-01T00:00:00Z",
+                "DeletedAt": null,
+                "ID": 0,
+                "Name": "",
+                "Email": "",
+                "Password": ""
+            },
+            "Title": "",
+            "Content": ""
+        },
+        "Comment": "J'aime les pistacles"
+    }
+]
 ```
 
 <a name="user"/>
