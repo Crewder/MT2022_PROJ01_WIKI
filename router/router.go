@@ -1,12 +1,13 @@
 package router
 
 import (
+	"net/http"
+
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/gowiki-api/controllers"
 	"github.com/gowiki-api/middleware"
 	"github.com/gowiki-api/services"
-	"net/http"
 )
 
 func Router() http.Handler {
@@ -35,7 +36,7 @@ func Router() http.Handler {
 
 	router.Post("/user/refresh", services.RefreshToken) // 	"/refresh" - refresh the Token
 	router.Post("/article/create", controllers.ArticleCreate)
-	//PrivateRouter.Put("/article/{id}", controllers.ArticleUpdate)
+	router.Put("/article/{id}", controllers.ArticleUpdate)
 	router.Post("/comment/create", controllers.CommentCreate)
 	router.Get("/users", controllers.GetUsers)
 	router.Get("/user/{id}", controllers.GetUser)

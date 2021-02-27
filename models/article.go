@@ -1,8 +1,9 @@
 package models
 
 import (
-	"gorm.io/gorm"
 	"log"
+
+	"gorm.io/gorm"
 )
 
 type Article struct {
@@ -36,4 +37,10 @@ func NewArticle(a *Article) {
 		log.Fatal(a)
 	}
 	db.Create(&a)
+}
+
+func UpdateArticle(a *Article) {
+
+	db.Save(&a)
+
 }
