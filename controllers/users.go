@@ -3,9 +3,9 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/go-chi/chi"
-	"github.com/gowiki-api/Tools"
 	"github.com/gowiki-api/models"
 	"github.com/gowiki-api/services"
+	"github.com/gowiki-api/tools"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
@@ -70,7 +70,7 @@ func AuthUsers(write http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	PasswordIsOk := Tools.ComparePasswords(Users.Password, []byte(creds.Password))
+	PasswordIsOk := tools.ComparePasswords(Users.Password, []byte(creds.Password))
 
 	if !PasswordIsOk {
 		write.WriteHeader(http.StatusUnauthorized)

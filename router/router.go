@@ -26,7 +26,7 @@ func Router() http.Handler {
 	router.Post("/user/login", controllers.AuthUsers)   //		"/auth" - Authentificate by credentials
 	router.Post("/user/create", controllers.CreateUser) // 		"/Createuser" - Create a User and hash password
 	router.Post("/user/logout", controllers.Logout)     // 		"/Logout" - Disconnect and suppress token
-	router.Get("/article/{id}", controllers.GetArticle)
+	router.Get("/article/{slug}", controllers.GetArticle)
 	router.Get("/articles", controllers.GetArticles)
 
 	// -------- Private Route  --------//

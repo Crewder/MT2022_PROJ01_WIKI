@@ -2,13 +2,11 @@ package controllers
 
 import (
 	"encoding/json"
+	"github.com/go-chi/chi"
+	"github.com/gowiki-api/models"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
-
-	"github.com/go-chi/chi"
-	"github.com/gowiki-api/models"
 )
 
 func ArticleCreate(w http.ResponseWriter, r *http.Request) {
@@ -30,13 +28,12 @@ func GetArticles(w http.ResponseWriter, r *http.Request) {
 func GetArticle(w http.ResponseWriter, r *http.Request) {
 	var err error
 
-	articleId := chi.URLParam(r, "id")
+	slug := chi.URLParam(r, "slug")
 
-	ID, err := strconv.ParseInt(articleId, 0, 0)
 	if err != nil {
 		log.Fatal(err)
 	}
-	articleDetails := models.GetArticleById(ID)
+	articleDetails := models.GetArticleBySlug(slug)
 
 	coreResponse(w, http.StatusOK, articleDetails)
 }
@@ -44,12 +41,9 @@ func GetArticle(w http.ResponseWriter, r *http.Request) {
 func ArticleUpdate(w http.ResponseWriter, r *http.Request) {
 	var err error
 
-	articleId := chi.URLParam(r, "id")
-	ID, err := strconv.ParseInt(articleId, 0, 0)
-	if err != nil {
-		log.Fatal(err)
-	}
-	article := models.GetArticleById(ID)
+	slug := chi.URLParam(r, "slug")
+
+	article := models.GetArticleBySlug(slug)
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -60,7 +54,7 @@ func ArticleUpdate(w http.ResponseWriter, r *http.Request) {
 
 	models.UpdateArticle(article)
 
-	newArticle := models.GetArticleById(ID)
+	newArticle := models.GetArticleBySlug(slug)
 
 	coreResponse(w, http.StatusOK, newArticle)
 }
