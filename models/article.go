@@ -1,9 +1,8 @@
 package models
 
 import (
-	"log"
-
 	"gorm.io/gorm"
+	"log"
 )
 
 type Article struct {
@@ -21,9 +20,9 @@ func init() {
 }
 
 func GetAllArticles() []Article {
-	var Articles []Article
-	db.Find(&Articles)
-	return Articles
+	var articles []Article
+	db.Find(&articles)
+	return articles
 }
 
 func GetArticleById(Id int64) *Article {
@@ -40,7 +39,5 @@ func NewArticle(a *Article) {
 }
 
 func UpdateArticle(a *Article) {
-
 	db.Save(&a)
-
 }
