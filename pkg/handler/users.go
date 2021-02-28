@@ -69,7 +69,7 @@ func AuthUsers(write http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	PasswordIsOk := ComparePasswords(Users.Password, []byte(creds.Password))
+	PasswordIsOk := models.ComparePasswords(Users.Password, []byte(creds.Password))
 
 	if !PasswordIsOk {
 		write.WriteHeader(http.StatusUnauthorized)
@@ -77,6 +77,7 @@ func AuthUsers(write http.ResponseWriter, request *http.Request) {
 	}
 
 	authTokenString, refreshTokenString, csrfSecret, err := jwt.CreateNewTokens()
+
 	jwt.SetCookies(write, authTokenString, refreshTokenString)
 	if err != nil {
 		write.WriteHeader(http.StatusInternalServerError)
@@ -90,15 +91,4 @@ func AuthUsers(write http.ResponseWriter, request *http.Request) {
 func Logout(write http.ResponseWriter, request *http.Request) {
 	jwt.ClearSession(write)
 	write.WriteHeader(http.StatusOK)
-}
-
-func ComparePasswords(hashedPwd string, plainPwd []byte) bool {
-	byteHash := []byte(hashedPwd)
-	err := bcrypt.CompareHashAndPassword(byteHash, plainPwd)
-	if err != nil {
-		log.Println(err)
-		return false
-	}
-
-	return true
 }

@@ -9,7 +9,6 @@ import (
 
 func Router() http.Handler {
 	router := chi.NewRouter()
-
 	router.Use(middleware.CORSMiddleware) // Configure CORS
 
 	// -------- Public route  --------//
@@ -24,7 +23,6 @@ func Router() http.Handler {
 	PrivateRouter := router.Group(nil)
 	PrivateRouter.Use(middleware.AuthentificationMiddleware) // Verify the JwtToken and CSRF
 
-	//PrivateRouter.Post("/user/refresh", jwt.RefreshToken)
 	PrivateRouter.Post("/article/create", handler.ArticleCreate)
 	PrivateRouter.Put("/article/{id}", handler.ArticleUpdate)
 	PrivateRouter.Post("/comment/create", handler.CommentCreate)

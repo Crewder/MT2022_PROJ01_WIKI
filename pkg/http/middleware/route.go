@@ -29,7 +29,7 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 			})
 
 			// CSRF Verification
-			actualCSRF := key.GetCsrfFromReq(request)
+			actualCSRF := GetCsrfFromReq(request)
 			expectedCSRF := key.CSRFKey
 
 			if actualCSRF != expectedCSRF {
@@ -60,4 +60,13 @@ func CORSMiddleware(next http.Handler) http.Handler {
 		ctx := context.WithValue(request.Context(), "cors", corshandler)
 		next.ServeHTTP(write, request.WithContext(ctx))
 	})
+}
+
+func GetCsrfFromReq(r *http.Request) string {
+	csrfFromForm := r.FormValue("X-CSRF-Token")
+	if csrfFromForm != "" {
+		return csrfFromForm
+	} else {
+		return r.Header.Get("X-CSRF-Token")
+	}
 }

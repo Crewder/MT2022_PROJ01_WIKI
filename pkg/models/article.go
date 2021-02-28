@@ -40,7 +40,5 @@ func NewArticle(a *Article) {
 }
 
 func UpdateArticle(a *Article) {
-
 	db.Save(&a)
-
 }
