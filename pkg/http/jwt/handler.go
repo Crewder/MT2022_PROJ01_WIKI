@@ -20,7 +20,7 @@ type Credentials struct {
 
 func CreateNewTokens() (authTokenString, csrfSecret string, err error) {
 	csrfSecret = CSRFKey
-	authTokenString, err = createAuthTokenString(csrfSecret)
+	authTokenString, err = CreateAuthTokenString(csrfSecret)
 
 	if err != nil {
 		return
@@ -28,17 +28,17 @@ func CreateNewTokens() (authTokenString, csrfSecret string, err error) {
 	return
 }
 
-func SetCookies(write http.ResponseWriter, authTokenString string) {
+func SetCookies(w http.ResponseWriter, authTokenString string) {
 	authCookie := http.Cookie{
 		Name:     "AuthToken",
 		Value:    authTokenString,
 		HttpOnly: true,
 		Path:     "/",
 	}
-	http.SetCookie(write, &authCookie)
+	http.SetCookie(w, &authCookie)
 }
 
-func createAuthTokenString(csrfSecret string) (authTokenString string, err error) {
+func CreateAuthTokenString(csrfSecret string) (authTokenString string, err error) {
 	expirationTime := time.Now().Add(20 * time.Minute).Unix()
 
 	authClaims := &Claims{
@@ -54,7 +54,7 @@ func createAuthTokenString(csrfSecret string) (authTokenString string, err error
 	return
 }
 
-func ClearSession(write http.ResponseWriter) {
+func ClearSession(w http.ResponseWriter) {
 	authCookie := http.Cookie{
 		Name:     "AuthToken",
 		Value:    "",
@@ -62,5 +62,5 @@ func ClearSession(write http.ResponseWriter) {
 		HttpOnly: true,
 		Path:     "/",
 	}
-	http.SetCookie(write, &authCookie)
+	http.SetCookie(w, &authCookie)
 }

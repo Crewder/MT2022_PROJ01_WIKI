@@ -9,15 +9,14 @@ import (
 
 type User struct {
 	gorm.Model
-	ID           uint
-	Name         string
-	Email        string
-	Password     string
-	RefreshToken string
+	ID       uint   `json:"ID"`
+	Name     string `json:"Name"`
+	Email    string `json:"Email"`
+	Password string `json:"Password"`
 }
 
 func init() {
-	db.AutoMigrate(&User{})
+	_ = db.AutoMigrate(&User{})
 }
 
 func GetAllUsers() []User {

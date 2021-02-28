@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func ArticleCreate(w http.ResponseWriter, r *http.Request) {
+func CreateArticle(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Fatal(err)
@@ -17,28 +17,22 @@ func ArticleCreate(w http.ResponseWriter, r *http.Request) {
 	var article models.Article
 	err = json.Unmarshal(body, &article)
 	models.NewArticle(&article)
-	coreResponse(w, http.StatusCreated, nil)
+	CoreResponse(w, http.StatusCreated, nil)
 }
 
 func GetArticles(w http.ResponseWriter, r *http.Request) {
 	articles := models.GetAllArticles()
-	coreResponse(w, http.StatusOK, articles)
+	CoreResponse(w, http.StatusOK, articles)
 }
 
 func GetArticle(w http.ResponseWriter, r *http.Request) {
-	var err error
-
 	slug := chi.URLParam(r, "slug")
-
-	if err != nil {
-		log.Fatal(err)
-	}
 	articleDetails := models.GetArticleBySlug(slug)
 
-	coreResponse(w, http.StatusOK, articleDetails)
+	CoreResponse(w, http.StatusOK, articleDetails)
 }
 
-func ArticleUpdate(w http.ResponseWriter, r *http.Request) {
+func UpdateArticle(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	slug := chi.URLParam(r, "slug")
@@ -56,5 +50,5 @@ func ArticleUpdate(w http.ResponseWriter, r *http.Request) {
 
 	newArticle := models.GetArticleBySlug(slug)
 
-	coreResponse(w, http.StatusOK, newArticle)
+	CoreResponse(w, http.StatusOK, newArticle)
 }

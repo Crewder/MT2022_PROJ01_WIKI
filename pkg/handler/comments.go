@@ -9,19 +9,20 @@ import (
 	"net/http"
 )
 
-func CommentCreate(w http.ResponseWriter, r *http.Request) {
+func CreateComment(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	var comment models.Comment
 	err = json.Unmarshal(body, &comment)
 	models.NewComment(&comment)
-	coreResponse(w, http.StatusCreated, nil)
+	CoreResponse(w, http.StatusCreated, nil)
 }
 
 func GetCommentsByArticle(w http.ResponseWriter, r *http.Request) {
 	articleId := chi.URLParam(r, "id")
 	comments := models.GetAllCommentsByArticle(articleId)
-	coreResponse(w, http.StatusOK, comments)
+	CoreResponse(w, http.StatusOK, comments)
 }
