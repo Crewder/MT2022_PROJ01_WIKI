@@ -1,14 +1,13 @@
-package controllers
+package handler
 
 import (
 	"encoding/json"
+	"github.com/go-chi/chi"
+	"github.com/gowiki-api/pkg/models"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
-
-	"github.com/go-chi/chi"
-	"github.com/gowiki-api/models"
 )
 
 func ArticleCreate(w http.ResponseWriter, r *http.Request) {

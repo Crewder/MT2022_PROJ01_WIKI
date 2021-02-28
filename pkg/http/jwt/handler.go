@@ -1,18 +1,16 @@
-package services
+package jwt
 
 import (
 	"github.com/dgrijalva/jwt-go"
-	"github.com/gowiki-api/Tools"
+	_ "github.com/joho/godotenv"
 	"net/http"
 	"time"
 )
 
-//todo a set dans le .env
-var JwtKey = Tools.GenerateARandomString()
-
 // Struct to encode JWT
 type Claims struct {
 	Email string `json:"email"`
+	CSRF  []byte `json:"X-CSRF-TOKEN"`
 	jwt.StandardClaims
 }
 
@@ -22,12 +20,13 @@ type Credentials struct {
 	Email    string `json:"email"`
 }
 
-func CreateToken(write http.ResponseWriter, creds Credentials) (http.ResponseWriter, error) {
+func CreateToken(write http.ResponseWriter, request *http.Request, creds Credentials) error {
 	var err error
-	expirationTime := time.Now().Add(1 * time.Minute)
+	expirationTime := time.Now().Add(5 * time.Minute)
 
 	claims := &Claims{
 		Email: creds.Email,
+		CSRF:  CSRFKey,
 		StandardClaims: jwt.StandardClaims{
 			NotBefore: time.Now().Unix(),
 			ExpiresAt: expirationTime.Unix(),
@@ -39,8 +38,9 @@ func CreateToken(write http.ResponseWriter, creds Credentials) (http.ResponseWri
 	tokenString, err := token.SignedString(JwtKey)
 
 	if err != nil {
+		print(err)
 		write.WriteHeader(http.StatusInternalServerError)
-		return nil, err
+		return err
 	}
 
 	http.SetCookie(write, &http.Cookie{
@@ -48,27 +48,25 @@ func CreateToken(write http.ResponseWriter, creds Credentials) (http.ResponseWri
 		Value:    tokenString,
 		Expires:  expirationTime,
 		HttpOnly: true,
+		Path:     "/",
 	})
 
-	return write, err
+	return err
 }
 
 func RefreshToken(write http.ResponseWriter, request *http.Request) {
 
-	ExtractCookieAndVerifyToken(write, request)
-
+	var creds Credentials
 	claims := &Claims{}
 
 	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 30*time.Second {
 		write.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
-	// set the new detail token
-	//TODO Recuperation de l'email
-	// claims.email := Cookie.EMAIL
 	expirationTime := time.Now().Add(30 * time.Minute)
 	claims.ExpiresAt = expirationTime.Unix()
+	email := creds.Email
+	claims.Email = email
 	claims.IssuedAt = time.Now().Unix()
 
 	// Generate the JWT Token
@@ -86,6 +84,7 @@ func RefreshToken(write http.ResponseWriter, request *http.Request) {
 		Value:    tokenString,
 		Expires:  expirationTime,
 		HttpOnly: true,
+		Path:     "/",
 	})
 }
 
