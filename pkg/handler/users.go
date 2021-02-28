@@ -76,9 +76,9 @@ func AuthUsers(write http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	authTokenString, refreshTokenString, csrfSecret, err := jwt.CreateNewTokens()
+	authTokenString, csrfSecret, err := jwt.CreateNewTokens()
 
-	jwt.SetCookies(write, authTokenString, refreshTokenString)
+	jwt.SetCookies(write, authTokenString)
 	if err != nil {
 		write.WriteHeader(http.StatusInternalServerError)
 		return

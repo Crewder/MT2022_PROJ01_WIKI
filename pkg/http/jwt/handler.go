@@ -18,7 +18,7 @@ type Credentials struct {
 	Email    string `json:"email"`
 }
 
-func CreateNewTokens() (authTokenString, refreshTokenString, csrfSecret string, err error) {
+func CreateNewTokens() (authTokenString, csrfSecret string, err error) {
 	csrfSecret = CSRFKey
 	authTokenString, err = createAuthTokenString(csrfSecret)
 
