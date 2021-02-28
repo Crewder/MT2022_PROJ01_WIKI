@@ -4,20 +4,21 @@ import (
 	"context"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/cors"
+	"github.com/gowiki-api/pkg/handler"
 	key "github.com/gowiki-api/pkg/http/jwt"
 	"log"
 	"net/http"
 )
 
 func AuthentificationMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(write http.ResponseWriter, request *http.Request) {
-		AuthCookie, authErr := request.Cookie("AuthToken")
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		AuthCookie, authErr := r.Cookie("AuthToken")
 		if authErr != nil {
 			if authErr == http.ErrNoCookie {
-				write.WriteHeader(http.StatusUnauthorized)
+				handler.CoreResponse(w, http.StatusUnauthorized, nil)
 				return
 			}
-			write.WriteHeader(http.StatusBadRequest)
+			handler.CoreResponse(w, http.StatusBadRequest, nil)
 			return
 		} else {
 			jwtToken := AuthCookie.Value
@@ -29,18 +30,18 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 			})
 
 			// CSRF Verification
-			actualCSRF := GetCsrfFromReq(request)
+			actualCSRF := GetCsrfFromReq(r)
 			expectedCSRF := key.CSRFKey
 
 			if actualCSRF != expectedCSRF {
-				write.WriteHeader(http.StatusForbidden)
+				handler.CoreResponse(w, http.StatusForbidden, nil)
 			} else {
 				//Jwt Validity verification
 				if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-					ctx := context.WithValue(request.Context(), "props", claims)
-					next.ServeHTTP(write, request.WithContext(ctx))
+					ctx := context.WithValue(r.Context(), "props", claims)
+					next.ServeHTTP(w, r.WithContext(ctx))
 				} else {
-					write.WriteHeader(http.StatusUnauthorized)
+					handler.CoreResponse(w, http.StatusUnauthorized, nil)
 					log.Fatal(err)
 				}
 			}
@@ -49,16 +50,16 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 }
 
 func CORSMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(write http.ResponseWriter, request *http.Request) {
-		corshandler := cors.Handler(cors.Options{
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		corsHandler := cors.Handler(cors.Options{
 			AllowedOrigins:   []string{"*"},
 			AllowedMethods:   []string{"GET", "POST", "PUT", "OPTIONS"},
 			AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 			AllowCredentials: true,
 		})
 
-		ctx := context.WithValue(request.Context(), "cors", corshandler)
-		next.ServeHTTP(write, request.WithContext(ctx))
+		ctx := context.WithValue(r.Context(), "cors", corsHandler)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 

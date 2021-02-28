@@ -10,17 +10,17 @@ import (
 
 type Article struct {
 	gorm.Model
-	UserId  int
-	User    User `gorm:"foreignKey:UserId"`
-	Title   string
-	Content string
-	Slug    string
+	UserId  int    `json:"UserId"`
+	User    User   `gorm:"foreignKey:UserId"`
+	Title   string `json:"Title"`
+	Content string `json:"Content"`
+	Slug    string `json:"Slug"`
 }
 
 type Articles []Article
 
 func init() {
-	db.AutoMigrate(&Article{})
+	_ = db.AutoMigrate(&Article{})
 }
 
 func GetAllArticles() []Article {

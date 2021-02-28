@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func goDotEnvVariable(key string) string {
+func GoDotEnvVariable(key string) string {
 	err := godotenv.Load(".env")
 
 	if err != nil {
@@ -15,5 +15,5 @@ func goDotEnvVariable(key string) string {
 	return os.Getenv(key)
 }
 
-var JwtKey = []byte(goDotEnvVariable("JWTKey"))
-var CSRFKey = goDotEnvVariable("CSRFKey")
+var JwtKey = []byte(GoDotEnvVariable("JWTKey"))
+var CSRFKey = GoDotEnvVariable("CSRFKey")

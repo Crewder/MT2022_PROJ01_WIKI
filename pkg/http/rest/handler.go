@@ -14,9 +14,9 @@ func Router() http.Handler {
 	// -------- Public route  --------//
 
 	router.Post("/user/login", handler.AuthUsers)
-	router.Post("/user/create", handler.AddUser)
+	router.Post("/user/create", handler.CreateUser)
 	router.Post("/user/logout", handler.Logout)
-	router.Get("/article/{id}", handler.GetArticle)
+	router.Get("/article/{slug}", handler.GetArticle)
 	router.Get("/articles", handler.GetArticles)
 	router.Get("/comment/{id}", handler.GetCommentsByArticle)
 
@@ -24,9 +24,9 @@ func Router() http.Handler {
 	PrivateRouter := router.Group(nil)
 	PrivateRouter.Use(middleware.AuthentificationMiddleware) // Verify the JwtToken and CSRF
 
-	PrivateRouter.Post("/article/create", handler.ArticleCreate)
-	PrivateRouter.Put("/article/{id}", handler.ArticleUpdate)
-	PrivateRouter.Post("/comment/create", handler.CommentCreate)
+	PrivateRouter.Post("/article/create", handler.CreateArticle)
+	PrivateRouter.Put("/article/{slug}", handler.UpdateArticle)
+	PrivateRouter.Post("/comment/create", handler.CreateComment)
 	PrivateRouter.Get("/users", handler.GetUsers)
 	PrivateRouter.Get("/user/{id}", handler.GetUser)
 

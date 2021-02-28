@@ -7,17 +7,17 @@ import (
 
 type Comment struct {
 	gorm.Model
-	UserId    int
-	User      User `gorm:"foreignKey:UserId"`
-	ArticleId int
+	UserId    int     `json:"UserId"`
+	User      User    `gorm:"foreignKey:UserId"`
+	ArticleId int     `json:"ArticleId"`
 	Article   Article `gorm:"foreignKey:ArticleId"`
-	Comment   string
+	Comment   string  `json:"Comment"`
 }
 
 type Comments []Comment
 
 func init() {
-	db.AutoMigrate(&Comment{})
+	_ = db.AutoMigrate(&Comment{})
 }
 
 func NewComment(comment *Comment) {

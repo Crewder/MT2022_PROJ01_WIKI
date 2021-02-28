@@ -17,78 +17,74 @@ type Credentials struct {
 	Email    string `json:"email"`
 }
 
+func CreateUser(w http.ResponseWriter, r *http.Request) {
+	user := &models.User{}
+	_ = json.NewDecoder(r.Body).Decode(user)
+
+	pass, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		CoreResponse(w, http.StatusInternalServerError, nil)
+	}
+
+	user.Password = string(pass)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	models.NewUser(user)
+	CoreResponse(w, http.StatusCreated, nil)
+}
+
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	users := models.GetAllUsers()
-	res, _ := json.Marshal(users)
-	w.Header().Set("content-type", "application/json;charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write(res)
+	CoreResponse(w, http.StatusOK, users)
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	userId := chi.URLParam(r, "id")
-
 	ID, err := strconv.ParseInt(userId, 0, 0)
+
 	if err != nil {
 		log.Fatal(err)
 	}
-	userDetails := models.GetUserById(ID)
-	res, _ := json.Marshal(userDetails)
-	w.Header().Set("content-type", "application/json;charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write(res)
-}
 
-func AddUser(write http.ResponseWriter, request *http.Request) {
-	user := &models.User{}
-	json.NewDecoder(request.Body).Decode(user)
-
-	pass, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-	if err != nil {
-		write.WriteHeader(http.StatusInternalServerError)
-	}
-	user.Password = string(pass)
-	if err != nil {
-		log.Fatal(err)
-	}
-	models.NewUser(user)
-
-	write.WriteHeader(http.StatusCreated)
+	user := models.GetUserById(ID)
+	CoreResponse(w, http.StatusOK, user)
 }
 
 // Return Cookie with JWT string
-func AuthUsers(write http.ResponseWriter, request *http.Request) {
+func AuthUsers(w http.ResponseWriter, r *http.Request) {
 	var creds Credentials
-	err := json.NewDecoder(request.Body).Decode(&creds)
+	err := json.NewDecoder(r.Body).Decode(&creds)
 	Users := models.GetUserByEmail(creds.Email)
 
 	if err != nil {
-		write.WriteHeader(http.StatusBadRequest)
+		CoreResponse(w, http.StatusBadRequest, nil)
 		return
 	}
 
 	PasswordIsOk := models.ComparePasswords(Users.Password, []byte(creds.Password))
 
 	if !PasswordIsOk {
-		write.WriteHeader(http.StatusUnauthorized)
+		CoreResponse(w, http.StatusUnauthorized, nil)
 		return
 	}
 
 	authTokenString, csrfSecret, err := jwt.CreateNewTokens()
 
-	jwt.SetCookies(write, authTokenString)
+	jwt.SetCookies(w, authTokenString)
 	if err != nil {
-		write.WriteHeader(http.StatusInternalServerError)
+		CoreResponse(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	write.Header().Set("X-CSRF-Token", csrfSecret)
-	write.WriteHeader(http.StatusOK)
+	w.Header().Set("X-CSRF-Token", csrfSecret)
+	CoreResponse(w, http.StatusOK, nil)
 }
 
-func Logout(write http.ResponseWriter, request *http.Request) {
-	jwt.ClearSession(write)
-	write.WriteHeader(http.StatusOK)
+func Logout(w http.ResponseWriter, r *http.Request) {
+	jwt.ClearSession(w)
+	CoreResponse(w, http.StatusOK, nil)
 }

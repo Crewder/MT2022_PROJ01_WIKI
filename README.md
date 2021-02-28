@@ -21,11 +21,13 @@ Une API qui gère des wikis. On peut se connecter, créer un compte, créer un a
    * [3.4 Récupération de tous les articles](#fetchallarticle)
 * [4. Commentaire](#comment)
     * [4.1 Création d'un commentaire](#createcomment)
-    * [4.2 Récupération des commentaire lié à un artcile](#showcomments)
+    * [4.2 Récupération des commentaires lié à un article](#showcomments)
 * [5. Utilisateur](#user)
     * [5.1 Creation d'un utilisateur](#createuser)
-    * [5.2 Récupération des utilisateurs](#fetchuser)
-    * [5.3 Connexion utilisateur](#Auth)
+    * [5.1 Récupération d'un utilisateur](#fetchuser)
+    * [5.2 Récupération des utilisateurs](#fetchalluser)
+    * [5.3 Connexion utilisateur](#auth)
+    * [5.3 Déconnexion d'un utilisateur](#logout)
 * [5. Modèle de données ](#models)
     
 
@@ -56,33 +58,33 @@ go get github.com/joho/godotenv
 
 ## Lancement de l'application 
 ```
-go run
+go run main.go
 ```
-
-
 
 <a name="request"/>
 
 # Requetes
 
-| Méthodes |    Endpoint |Action|
-|--|--|--|
-|POST | article/create  | Création d'un article |
-|PUT | article/{id} | Update d'un article  |
-|GET | article/{id} | Récupération d'un article |
+| Méthodes | Endpoint | Action  |
+|---|---|---|
+| POST | article/create | Création d'un article |
+| PUT | article/{slug} | Mise à jour d'un article |
+| GET | article/{slug} | Récupération d'un article |
 |GET | articles | Récupération de tous les articles |
 
 
-| Méthodes |    Endpoint |Action|
-|--|--|--|
+| Méthodes | Endpoint | Action |
+|---|---|---|
 |POST| comment/create | Création d'un commentaire |
+|GET| comment/{id} | Récupération des commentaires d'un article|
 
-| Méthodes |    Endpoint |Action|
-|--|--|--|
-|POST| user/create | Création d'un user |
-|GET| user/{id} | Récupération d'un user |
-|GET| users/ | Récupération des users |
-|POST| api/auth/ | Connexion utilisateur |
+| Méthodes | Endpoint | Action |
+|---|---|---|
+|POST| user/create | Création d'un utilisateur |
+|GET| user/{id} | Récupération d'un utilisateur |
+|GET| users | Récupération des utilisateurs |
+|POST| user/login | Connexion utilisateur |
+|POST| user/logout | Déconnexion utilisateur |
 
 <a name="article"/>
 
@@ -96,30 +98,20 @@ go run
 
 #### Parameters
 
-| Name |    Type |Description|
-|--|--|--|
-|id| int| Id de l'article |
-|--|--|--|
-|created_at| date| Date de création |
-|--|--|--|
-|updated_at| date| date de mise à jour |
-|--|--|--|
-|deleted_at| date| date de suppression |
-|--|--|--|
-|user_id| int| Id de l'utilisateur actif. Requis |
-|--|--|--|
-|title| string| titre de l'article. Requis |
-|--|--|--|
-|content| string| contenu de l'article. Requis |
+| Name | Type |Description|
+|---|---|---|
+|user_id| int| Id de l'utilisateur actif |
+|title| string| Titre de l'article |
+|content| string| Contenu de l'article |
 
 #### Request URL
 
 ```
-http://localhost:8080/article
+http://localhost:8080/article/create
 ```
 
 #### Request Body
-```
+``` json
 {
     "UserId": 1,
     "Title": "Vache",
@@ -133,41 +125,32 @@ null
 
 <a name="updatearticle"/>
 
-## Update d'un article
+## Mise à jour d'un article
 
-**PUT** - Update de l'article
+**PUT** - Mise à jour d'un article
 
 #### Parameters
 
-| Name |    Type |Description|
-|--|--|--|
-|created_at| date| Date de création |
-|--|--|--|
-|updated_at| date| date de mise à jour |
-|--|--|--|
-|deleted_at| date| date de suppression |
-|--|--|--|
-|user_id| int| Id de l'utilisateur actif. Requis |
-|--|--|--|
-|title| string| titre de l'article. Requis |
-|--|--|--|
-|content| string| contenu de l'article. Requis |
+| Name | Type |Description|
+|---|---|---|
+|user_id| int| Id de l'utilisateur actif |
+|title| string| Titre de l'article |
+|content| string| Contenu de l'article |
 
 #### Request Url
 ```
-http://localhost:8080/article/vache
+http://localhost:8080/article/{slug}
 ```
 
 #### Request Body
-```
+``` json
 {
     "Title": "Vache épisode 2",
-    "Content":"Le retour de la vache episode deux on update l'article
-    Vache est le nom donné à la femelle du mammifère domestique de l'espèce Bos taurus, un ruminant appartenant à la famille des bovidés, généralement porteur de deux cornes sur le front. Les individus mâles sont appelés taureaux et les jeunes, veaux. Une génisse ou vachette, appelée aussi taure au Québec ou dans le Poitou, est une vache qui n'a pas vêlé. Descendant de plusieurs sous-espèces d'aurochs, les bovins actuels (zébus compris) sont élevés pour produire du lait et de la viande, ou comme animaux de trait. En Inde, la vache est sacrée. Le mot vache vient du latin vacca, de même sens."
+    "Content":"Le retour de la vache episode deux on update l'article Vache est le nom donné à la femelle du mammifère domestique de l'espèce Bos taurus, un ruminant appartenant à la famille des bovidés, généralement porteur de deux cornes sur le front. Les individus mâles sont appelés taureaux et les jeunes, veaux. Une génisse ou vachette, appelée aussi taure au Québec ou dans le Poitou, est une vache qui n'a pas vêlé. Descendant de plusieurs sous-espèces d'aurochs, les bovins actuels (zébus compris) sont élevés pour produire du lait et de la viande, ou comme animaux de trait. En Inde, la vache est sacrée. Le mot vache vient du latin vacca, de même sens."
 }
 ```
 #### Request Response
-```
+``` json
 {
     "ID": 7,
     "CreatedAt": "2021-02-26T19:04:43.446+01:00",
@@ -196,10 +179,10 @@ http://localhost:8080/article/vache
 
 #### Request Url
 ```
-http://localhost:8080/article/vache
+http://localhost:8080/article/{slug}
 ```
 #### Request Response
-```
+``` json
 {
     "ID": 1,
     "CreatedAt": "2021-02-15T22:25:34+01:00",
@@ -232,7 +215,7 @@ http://localhost:8080/article/vache
 http://localhost:8080/articles
 ```
 #### Request Response
-```
+``` json
 [
    
     {
@@ -285,16 +268,26 @@ http://localhost:8080/articles
 ## Création d'un commentaire
 
 **POST** - Création d'un commentaire
+
+#### Parameters
+
+| Name | Type |Description|
+|---|---|---|
+|user_id | int| Id de l'utilisateur actif |
+|article_id | int | Id de l'article |
+|comment | string | Commentaire de l'article |
+
+
 #### Request Url
 ```
 http://localhost:8080/comment/create
 ```
 #### Request Body
-```
+``` json
 {
     "UserId": 1,
     "ArticleId": 2,
-    "comment": "J'aime les pistacles"
+    "comment": "J'aime les pistaches"
 }
 ```
 #### Request Response
@@ -309,7 +302,7 @@ null
 **GET** - Récupération des commentaires lié à un article
 #### Request Url
 ```
-http://localhost:8080/comment/2
+http://localhost:8080/comment/{articleId}
 ```
 #### Request Response
 ```json
@@ -346,10 +339,10 @@ http://localhost:8080/comment/2
                 "Password": ""
             },
             "Title": "",
-            "Content": ""
+            "Content": "",
             "Slug": "vache"
         },
-        "Comment": "J'aime les pistacles"
+        "Comment": "J'aime les pistaches"
     }
 ]
 ```
@@ -360,50 +353,164 @@ http://localhost:8080/comment/2
 
 <a name="createuser"/>
 
-## Création d'un user
+## Création d'un utilisateur
 
-**POST** - Création d'un User
+**POST** - Création d'un utilisateur
+
+#### Parameters
+
+| Name | Type |Description|
+|---|---|---|
+|name | string | Nom de l'utilisateur |
+|email | string| Email de l'utilisateur  |
+|password | string | Mot de passe de l'utilisateur |
+
+
+#### Request Url
+```
+http://localhost:8080/user/create
+``` 
 
 #### Request Body
 ```json
 {
-    "Email":"string",
-    "Username":"string"
+    "name": "lolo",
+    "email": "lolo@du433.fr",
+    "password": "superlolo"
 }
 ```
+
 #### Request Response
-```json
-{
-    "Email":"string",
-    "Username":"string"
-}
+```
+null
 ```
 
 <a name="fetchuser"/>
 
-## Récupération des users
-#### Request Body
+## Récupération d'un utilisateur
+
+**GET** - Récupérer un utilisateur
+
+#### Request Url
 ```
+http://localhost:8080/user/{id}
 ```
 #### Request Response
-```
+``` json
+{
+    "CreatedAt": "0001-01-01T00:00:00Z",
+    "UpdatedAt": "0001-01-01T00:00:00Z",
+    "DeletedAt": null,
+    "ID": 1,
+    "Name": "Florian",
+    "Email": "florian.leroy@hetic.net",
+    "Password": "test"
+}
 ```
 
-<a name="Auth"/>
+<a name="fetchalluser"/>
+
+## Récupération des utilisateurs
+
+**GET** - Récupérer tous les utilisateurs
+
+#### Request Url
+```
+http://localhost:8080/users
+```
+#### Request Response
+``` json
+[
+    {
+        "CreatedAt": "0001-01-01T00:00:00Z",
+        "UpdatedAt": "0001-01-01T00:00:00Z",
+        "DeletedAt": null,
+        "ID": 1,
+        "Name": "Florian",
+        "Email": "florian.leroy@hetic.net",
+        "Password": "test"
+    },
+    {
+        "CreatedAt": "0001-01-01T00:00:00Z",
+        "UpdatedAt": "0001-01-01T00:00:00Z",
+        "DeletedAt": null,
+        "ID": 2,
+        "Name": "",
+        "Email": "test.test@test.net",
+        "Password": "blabla"
+    },
+    {
+        "CreatedAt": "2021-02-28T17:39:56.558+01:00",
+        "UpdatedAt": "2021-02-28T17:39:56.558+01:00",
+        "DeletedAt": null,
+        "ID": 5,
+        "Name": "",
+        "Email": "fl@hetic.net",
+        "Password": "$2a$10$fQxIuySzWWwIDTPZiybxlO/B3x7Ak4RFBmMG75GOJyaovZg4zydya"
+    },
+    {
+        "CreatedAt": "2021-02-28T18:48:23.366+01:00",
+        "UpdatedAt": "2021-02-28T18:48:23.366+01:00",
+        "DeletedAt": null,
+        "ID": 6,
+        "Name": "",
+        "Email": "fl@hetic.net",
+        "Password": "$2a$10$T.NVY3MbpDuCSmOktIVYouuWIk5Q5a1jDa/1vZaF7WsgRi/yKcJfu"
+    }
+]
+```
+
+
+
+<a name="auth"/>
 
 ## Connexion utilisateur
 
 **POST** - Connexion d'un utilisateur
 
+#### Parameters
+
+| Name | Type |Description|
+|---|---|---|
+|email | string| Email de l'utilisateur |
+|password | string | Mot de passe de l'utilisateur |
+
+#### Request Url
+```
+http://localhost:8080/user/login
+```
+
 #### Request Body
 ```json
 {
-    "Email":"string",
-    "Username":"string"
+  "email": "lolo@du433.fr",
+  "password": "superlolo"
 }
 ```
 #### Request Response
 ```
+null
+```
+
+<a name="logout"/>
+
+## Déconnexion d'un utilisateur
+
+**POST** - Déconnexion d'un utilisateur
+
+#### Request Url
+```
+http://localhost:8080/user/logout
+```
+
+#### Request Body
+```
+null
+```
+
+#### Request Response
+```
+null
 ```
 
 <a name="models"/>
