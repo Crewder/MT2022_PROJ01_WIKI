@@ -18,6 +18,7 @@ func Router() http.Handler {
 	router.Post("/user/logout", handler.Logout)
 	router.Get("/article/{id}", handler.GetArticle)
 	router.Get("/articles", handler.GetArticles)
+	router.Get("/comment/{id}", handler.GetCommentsByArticle)
 
 	// -------- Private Route  --------//
 	PrivateRouter := router.Group(nil)

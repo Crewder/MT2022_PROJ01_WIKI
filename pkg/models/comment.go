@@ -26,3 +26,9 @@ func NewComment(comment *Comment) {
 	}
 	db.Create(&comment)
 }
+
+func GetAllCommentsByArticle(articleId string) []Comment {
+	var comments []Comment
+	db.Where("article_id = ?", articleId).Find(&comments)
+	return comments
+}
