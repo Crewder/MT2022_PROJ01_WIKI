@@ -504,9 +504,10 @@ http://localhost:8080/user/logout
 ```
 
 #### Request Body
-``
+```
 null
 ```
+
 #### Request Response
 ```
 null
