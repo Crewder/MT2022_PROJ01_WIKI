@@ -1,11 +1,10 @@
-package controllers
+package handler
 
 import (
 	"encoding/json"
 	"github.com/go-chi/chi"
-	"github.com/gowiki-api/models"
-	"github.com/gowiki-api/services"
-	"github.com/gowiki-api/tools"
+	"github.com/gowiki-api/pkg/http/jwt"
+	"github.com/gowiki-api/pkg/models"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
@@ -23,7 +22,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	res, _ := json.Marshal(users)
 	w.Header().Set("content-type", "application/json;charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write(res)
+	_, _ = w.Write(res)
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
@@ -39,10 +38,10 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	res, _ := json.Marshal(userDetails)
 	w.Header().Set("content-type", "application/json;charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write(res)
+	_, _ = w.Write(res)
 }
 
-func CreateUser(write http.ResponseWriter, request *http.Request) {
+func AddUser(write http.ResponseWriter, request *http.Request) {
 	user := &models.User{}
 	json.NewDecoder(request.Body).Decode(user)
 
@@ -70,19 +69,26 @@ func AuthUsers(write http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	PasswordIsOk := tools.ComparePasswords(Users.Password, []byte(creds.Password))
+	PasswordIsOk := models.ComparePasswords(Users.Password, []byte(creds.Password))
 
 	if !PasswordIsOk {
 		write.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
-	services.CreateToken(write, services.Credentials(creds))
+	authTokenString, csrfSecret, err := jwt.CreateNewTokens()
 
+	jwt.SetCookies(write, authTokenString)
+	if err != nil {
+		write.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	write.Header().Set("X-CSRF-Token", csrfSecret)
 	write.WriteHeader(http.StatusOK)
 }
 
 func Logout(write http.ResponseWriter, request *http.Request) {
-	services.ClearSession(write)
+	jwt.ClearSession(write)
 	write.WriteHeader(http.StatusOK)
 }

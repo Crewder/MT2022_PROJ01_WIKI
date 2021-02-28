@@ -410,4 +410,4 @@ http://localhost:8080/comment/2
 
 
 # Modèle de données
-![](assets/dbwiki.png)
+![](pkg/template/assets/dbwiki.png)

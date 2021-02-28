@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/gowiki-api/tools"
+	"github.com/gowiki-api/pkg/tools"
 	"gorm.io/gorm"
 	"log"
 	"strconv"

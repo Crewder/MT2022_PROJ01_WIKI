@@ -1,9 +1,9 @@
-package controllers
+package handler
 
 import (
 	"encoding/json"
 	"github.com/go-chi/chi"
-	"github.com/gowiki-api/models"
+	"github.com/gowiki-api/pkg/models"
 	"io/ioutil"
 	"log"
 	"net/http"

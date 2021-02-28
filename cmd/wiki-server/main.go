@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/gowiki-api/router"
+	"github.com/gowiki-api/pkg/http/rest"
 	"net/http"
 )
 
 func main() {
-	router := router.Router()
+	router := rest.Router()
 	http.ListenAndServe(":8080", router)
 }

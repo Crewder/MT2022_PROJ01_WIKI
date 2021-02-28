@@ -1,6 +1,7 @@
 package models
 
 import (
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
@@ -8,10 +9,11 @@ import (
 
 type User struct {
 	gorm.Model
-	ID       uint
-	Name     string
-	Email    string
-	Password string
+	ID           uint
+	Name         string
+	Email        string
+	Password     string
+	RefreshToken string
 }
 
 func init() {
@@ -44,4 +46,14 @@ func GetUserByEmail(Email string) *User {
 		log.Fatal(http.StatusBadRequest)
 	}
 	return &getUser
+}
+
+func ComparePasswords(hashedPwd string, plainPwd []byte) bool {
+	byteHash := []byte(hashedPwd)
+	err := bcrypt.CompareHashAndPassword(byteHash, plainPwd)
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+	return true
 }
