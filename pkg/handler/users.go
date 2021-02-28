@@ -76,11 +76,15 @@ func AuthUsers(write http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	err = jwt.CreateToken(write, request, jwt.Credentials(creds))
-
+	authTokenString, refreshTokenString, csrfSecret, err := jwt.CreateNewTokens()
+	jwt.SetCookies(write, authTokenString, refreshTokenString)
 	if err != nil {
-		write.WriteHeader(http.StatusOK)
+		write.WriteHeader(http.StatusInternalServerError)
+		return
 	}
+
+	write.Header().Set("X-CSRF-Token", csrfSecret)
+	write.WriteHeader(http.StatusOK)
 }
 
 func Logout(write http.ResponseWriter, request *http.Request) {

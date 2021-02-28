@@ -11,7 +11,6 @@ import (
 
 func AuthentificationMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(write http.ResponseWriter, request *http.Request) {
-
 		AuthCookie, authErr := request.Cookie("AuthToken")
 		if authErr != nil {
 			if authErr == http.ErrNoCookie {
@@ -29,12 +28,21 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 				return key.JwtKey, nil
 			})
 
-			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-				ctx := context.WithValue(request.Context(), "props", claims)
-				next.ServeHTTP(write, request.WithContext(ctx))
+			// CSRF Verification
+			actualCSRF := key.GetCsrfFromReq(request)
+			expectedCSRF := key.CSRFKey
+
+			if actualCSRF != expectedCSRF {
+				write.WriteHeader(http.StatusForbidden)
 			} else {
-				write.WriteHeader(http.StatusUnauthorized)
-				log.Fatal(err)
+				//Jwt Validity verification
+				if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+					ctx := context.WithValue(request.Context(), "props", claims)
+					next.ServeHTTP(write, request.WithContext(ctx))
+				} else {
+					write.WriteHeader(http.StatusUnauthorized)
+					log.Fatal(err)
+				}
 			}
 		}
 	})

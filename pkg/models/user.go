@@ -8,10 +8,11 @@ import (
 
 type User struct {
 	gorm.Model
-	ID       uint
-	Name     string
-	Email    string
-	Password string
+	ID           uint
+	Name         string
+	Email        string
+	Password     string
+	RefreshToken string
 }
 
 func init() {

@@ -7,10 +7,8 @@ import (
 	"time"
 )
 
-// Struct to encode JWT
 type Claims struct {
-	Email string `json:"email"`
-	CSRF  []byte `json:"X-CSRF-TOKEN"`
+	CSRF string `json:"CSRF"`
 	jwt.StandardClaims
 }
 
@@ -20,110 +18,101 @@ type Credentials struct {
 	Email    string `json:"email"`
 }
 
-func CreateToken(write http.ResponseWriter, request *http.Request, creds Credentials) error {
-	var err error
-	expirationTime := time.Now().Add(5 * time.Minute)
+func CreateNewTokens() (authTokenString, refreshTokenString, csrfSecret string, err error) {
+	csrfSecret = CSRFKey
+	refreshTokenString, err = createRefreshTokenString(csrfSecret)
+	authTokenString, err = createAuthTokenString(csrfSecret)
 
-	claims := &Claims{
-		Email: creds.Email,
-		CSRF:  CSRFKey,
+	if err != nil {
+		return
+	}
+	return
+}
+
+func SetCookies(write http.ResponseWriter, authTokenString string, refreshTokenString string) {
+	authCookie := http.Cookie{
+		Name:     "AuthToken",
+		Value:    authTokenString,
+		HttpOnly: true,
+		Path:     "/",
+	}
+	http.SetCookie(write, &authCookie)
+
+	refreshCookie := http.Cookie{
+		Name:     "RefreshToken",
+		Value:    refreshTokenString,
+		HttpOnly: true,
+		Path:     "/",
+	}
+	http.SetCookie(write, &refreshCookie)
+}
+
+func createAuthTokenString(csrfSecret string) (authTokenString string, err error) {
+	expirationTime := time.Now().Add(20 * time.Minute).Unix()
+
+	authClaims := &Claims{
+		CSRF: csrfSecret,
 		StandardClaims: jwt.StandardClaims{
 			NotBefore: time.Now().Unix(),
-			ExpiresAt: expirationTime.Unix(),
+			ExpiresAt: expirationTime,
 			IssuedAt:  time.Now().Unix(),
 		},
 	}
-	// Generate the JWT Token
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(JwtKey)
+	authJwt := jwt.NewWithClaims(jwt.SigningMethodHS256, authClaims)
+	authTokenString, err = authJwt.SignedString(JwtKey)
+	return
+}
 
-	if err != nil {
-		print(err)
-		write.WriteHeader(http.StatusInternalServerError)
-		return err
+func createRefreshTokenString(csrfString string) (refreshTokenString string, err error) {
+	expirationTime := time.Now().Add(72 * time.Hour).Unix()
+
+	refreshClaims := &Claims{
+		CSRF: csrfString,
+		StandardClaims: jwt.StandardClaims{
+			NotBefore: time.Now().Unix(),
+			ExpiresAt: expirationTime,
+			IssuedAt:  time.Now().Unix(),
+		},
 	}
+	refreshJwt := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
+	refreshTokenString, err = refreshJwt.SignedString(JwtKey)
+	return
+}
 
-	http.SetCookie(write, &http.Cookie{
+func ClearSession(write http.ResponseWriter) {
+	authCookie := http.Cookie{
 		Name:     "AuthToken",
-		Value:    tokenString,
-		Expires:  expirationTime,
+		Value:    "",
+		Expires:  time.Now().Add(-1000 * time.Hour),
 		HttpOnly: true,
 		Path:     "/",
-	})
-
-	return err
-}
-
-func RefreshToken(write http.ResponseWriter, request *http.Request) {
-
-	var creds Credentials
-	claims := &Claims{}
-
-	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 30*time.Second {
-		write.WriteHeader(http.StatusBadRequest)
-		return
 	}
-	expirationTime := time.Now().Add(30 * time.Minute)
-	claims.ExpiresAt = expirationTime.Unix()
-	email := creds.Email
-	claims.Email = email
-	claims.IssuedAt = time.Now().Unix()
+	http.SetCookie(write, &authCookie)
 
-	// Generate the JWT Token
-	NewToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := NewToken.SignedString(JwtKey)
-
-	if err != nil {
-		write.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	// Set the new token
-	http.SetCookie(write, &http.Cookie{
-		Name:     "AuthToken",
-		Value:    tokenString,
-		Expires:  expirationTime,
+	refreshCookie := http.Cookie{
+		Name:     "RefreshToken",
+		Value:    "",
+		Expires:  time.Now().Add(-1000 * time.Hour),
 		HttpOnly: true,
 		Path:     "/",
-	})
+	}
+	http.SetCookie(write, &refreshCookie)
 }
 
-func ExtractCookieAndVerifyToken(write http.ResponseWriter, request *http.Request) (*jwt.Token, error) {
-	c, err := request.Cookie("AuthToken")
-	if err != nil {
-		if err == http.ErrNoCookie {
-			write.WriteHeader(http.StatusUnauthorized)
-			return nil, nil
-		}
-		write.WriteHeader(http.StatusBadRequest)
-		return nil, nil
-	}
-	tknStr := c.Value
-	claims := &Claims{}
-	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
-		return JwtKey, nil
-	})
-	if err != nil {
-		if err == jwt.ErrSignatureInvalid {
-			write.WriteHeader(http.StatusUnauthorized)
-			return nil, nil
-		}
-		write.WriteHeader(http.StatusBadRequest)
-		return nil, nil
-	}
-	if !tkn.Valid {
-		write.WriteHeader(http.StatusUnauthorized)
-		return nil, nil
-	}
-	return tkn, err
+func getandrefreshtokens() {
+	// Verifier la validité de mon cookie
+	// si c'est valid : Return
+	//Si pas valid
+	// recupere le refresh dans ma bdd
+	// si c'est valide je refresh le AuthToken
+	// Sinon return 401
 }
 
-func ClearSession(response http.ResponseWriter) {
-	cookie := &http.Cookie{
-		Name:   "AuthToken",
-		Value:  "",
-		Path:   "/",
-		MaxAge: -1,
+func GetCsrfFromReq(r *http.Request) string {
+	csrfFromForm := r.FormValue("X-CSRF-Token")
+	if csrfFromForm != "" {
+		return csrfFromForm
+	} else {
+		return r.Header.Get("X-CSRF-Token")
 	}
-	http.SetCookie(response, cookie)
 }

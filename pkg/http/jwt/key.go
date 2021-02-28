@@ -16,4 +16,4 @@ func goDotEnvVariable(key string) string {
 }
 
 var JwtKey = []byte(goDotEnvVariable("JWTKey"))
-var CSRFKey = []byte(goDotEnvVariable("CSRFKey"))
+var CSRFKey = goDotEnvVariable("CSRFKey")
