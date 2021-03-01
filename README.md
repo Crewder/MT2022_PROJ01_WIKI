@@ -36,25 +36,18 @@ Une API qui gère des wikis. On peut se connecter, créer un compte, créer un a
 
 ### Pré requis
 
-**GORM**
+**Package Manager**
+
+ ```
+ go get github.com/Masterminds/glide
+ ```
+
+**Installation des dépendances**
 ```
-go get -u gorm.io/gorm  
-go get -u gorm.io/driver/mysql
+glide up
 ```
 
-**Dépendance **
-```
-go get -u github.com/gorilla/csrf
-go get -u github.com/go-chi/chi
-go get -u github.com/go-chi/cors
-go get -u github.com/dgrijalva/jwt-go
-go get -u golang.org/x/crypto/bcrypt
-```
 
-**Variables d'environnement**
-```
-go get github.com/joho/godotenv
-```
 <a name="launch"/>
 
 ## Lancement de l'application 
