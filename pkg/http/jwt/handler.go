@@ -18,9 +18,12 @@ type Credentials struct {
 	Email    string `json:"email"`
 }
 
-func CreateNewTokens() (authTokenString, csrfSecret string, err error) {
+func CreateNewTokens() (authTokenString, refreshTokenString, csrfSecret string, err error) {
 	csrfSecret = CSRFKey
 	authTokenString, err = CreateAuthTokenString(csrfSecret)
+	refreshTokenString, err = createRefreshTokenString(csrfSecret)
+
+	//todo ajout du refresh token dans la bdd
 
 	if err != nil {
 		return
@@ -28,7 +31,7 @@ func CreateNewTokens() (authTokenString, csrfSecret string, err error) {
 	return
 }
 
-func SetCookies(w http.ResponseWriter, authTokenString string) {
+func SetCookies(w http.ResponseWriter, authTokenString string, refreshTokenString string) {
 	authCookie := http.Cookie{
 		Name:     "AuthToken",
 		Value:    authTokenString,
@@ -36,6 +39,14 @@ func SetCookies(w http.ResponseWriter, authTokenString string) {
 		Path:     "/",
 	}
 	http.SetCookie(w, &authCookie)
+
+	refreshCookie := http.Cookie{
+		Name:     "RefreshToken",
+		Value:    refreshTokenString,
+		HttpOnly: true,
+		Path:     "/",
+	}
+	http.SetCookie(w, &refreshCookie)
 }
 
 func CreateAuthTokenString(csrfSecret string) (authTokenString string, err error) {
@@ -54,6 +65,22 @@ func CreateAuthTokenString(csrfSecret string) (authTokenString string, err error
 	return
 }
 
+func createRefreshTokenString(csrfString string) (refreshTokenString string, err error) {
+	expirationTime := time.Now().Add(72 * time.Hour).Unix()
+
+	refreshClaims := &Claims{
+		CSRF: csrfString,
+		StandardClaims: jwt.StandardClaims{
+			NotBefore: time.Now().Unix(),
+			ExpiresAt: expirationTime,
+			IssuedAt:  time.Now().Unix(),
+		},
+	}
+	refreshJwt := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
+	refreshTokenString, err = refreshJwt.SignedString(JwtKey)
+	return
+}
+
 func ClearSession(w http.ResponseWriter) {
 	authCookie := http.Cookie{
 		Name:     "AuthToken",
@@ -63,4 +90,40 @@ func ClearSession(w http.ResponseWriter) {
 		Path:     "/",
 	}
 	http.SetCookie(w, &authCookie)
+
+	refreshCookie := http.Cookie{
+		Name:     "RefreshToken",
+		Value:    "",
+		Expires:  time.Now().Add(-1000 * time.Hour),
+		HttpOnly: true,
+		Path:     "/",
+	}
+	http.SetCookie(w, &refreshCookie)
+}
+
+func getandrefreshtokens() {
+
+	//si le cookie est valide
+	//Si authToken valide
+	//refresh l'expiration du authtoken
+	//Sinon
+	//si le refreshtoken est valid
+	//si le authtoken est expiré
+	//Update de l'expiration de l'authtoken
+	//Update de l'expiration du refreshToken
+	//Update du CSRF dans le refreshToken
+	//sinon
+	//OK
+	//sinon Unauthorized
+	//sinon Unauthorized
+
+}
+
+func UpdateAuthToken() {
+
+	// return JWT + signature
+}
+func UpdateRefreshToken() {
+
+	// return JWT + signature
 }

@@ -36,6 +36,9 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 			if actualCSRF != expectedCSRF {
 				handler.CoreResponse(w, http.StatusForbidden, nil)
 			} else {
+				//TODO verification Refresh Token
+				//handler.getandrefreshtokens
+
 				//Jwt Validity verification
 				if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 					ctx := context.WithValue(r.Context(), "props", claims)

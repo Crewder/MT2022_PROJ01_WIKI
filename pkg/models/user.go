@@ -56,3 +56,5 @@ func ComparePasswords(hashedPwd string, plainPwd []byte) bool {
 	}
 	return true
 }
+
+//todo methode update du refreshToken
