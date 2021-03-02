@@ -1,0 +1,34 @@
+hash: 11b6beafc5fdde8df6347e2843719461a794e6cf8bd7b5b0bf0b9f0875cfce3f
+updated: 2021-03-01T19:26:24.0358549+01:00
+imports:
+- name: github.com/dgrijalva/jwt-go
+  version: dc14462fd58732591c7fa58cc8496d6824316a82
+- name: github.com/go-chi/chi
+  version: fb48a47641af106c7eae2f09864e7fecd54237bf
+- name: github.com/go-chi/cors
+  version: 9e1bf52b235ac2a7f9109b93d2012bc88336b4ac
+- name: github.com/go-sql-driver/mysql
+  version: 7b629a987258dcaba84d662edb5f408d11878fef
+- name: github.com/jinzhu/inflection
+  version: b5281034e75ed100658f8d9d0b2837f3fad4e8b3
+- name: github.com/jinzhu/now
+  version: 4d745f0c387c1e37c21cf1250cb37c2355607b55
+- name: github.com/joho/godotenv
+  version: f562099a4320c6cf2a806734921872cbe57ad585
+- name: golang.org/x/crypto
+  version: 5ea612d1eb830b38bc4e914e37f55311eb58adce
+  subpackages:
+  - bcrypt
+  - blowfish
+- name: gorm.io/driver/mysql
+  version: 575e57e1e87acbdf5196917c715e9512844f05ea
+- name: gorm.io/gorm
+  version: 3694ef4a2c72220ef2726115a1ee8de8a386219d
+  subpackages:
+  - callbacks
+  - clause
+  - logger
+  - migrator
+  - schema
+  - utils
+testImports: []
