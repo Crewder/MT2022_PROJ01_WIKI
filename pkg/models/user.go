@@ -13,6 +13,7 @@ type User struct {
 	Name     string `json:"Name"`
 	Email    string `json:"Email"`
 	Password string `json:"Password"`
+	Role     string `json:"Role"`
 }
 
 func init() {
@@ -47,7 +48,7 @@ func GetUserByEmail(Email string) *User {
 	return &getUser
 }
 
-func ComparePasswords(hashedPwd string, plainPwd []byte) bool {
+func PasswordIsValid(hashedPwd string, plainPwd []byte) bool {
 	byteHash := []byte(hashedPwd)
 	err := bcrypt.CompareHashAndPassword(byteHash, plainPwd)
 	if err != nil {

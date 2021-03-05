@@ -1,0 +1,4 @@
+p, admin, /*, *
+p, anonymous, user/login, *
+p, member, /logout, *
+g,fl@hetic.net,admin

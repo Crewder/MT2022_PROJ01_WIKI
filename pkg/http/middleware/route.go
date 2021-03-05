@@ -4,13 +4,13 @@ import (
 	"context"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/cors"
+	jwt2 "github.com/gowiki-api/pkg/auth/jwt"
 	"github.com/gowiki-api/pkg/handler"
-	key "github.com/gowiki-api/pkg/http/jwt"
 	"log"
 	"net/http"
 )
 
-func AuthentificationMiddleware(next http.Handler) http.Handler {
+func TokenAuthenMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		AuthCookie, authErr := r.Cookie("AuthToken")
 		if authErr != nil {
@@ -26,12 +26,12 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 					return nil, authErr
 				}
-				return key.JwtKey, nil
+				return jwt2.JwtKey, nil
 			})
 
 			// CSRF Verification
 			actualCSRF := GetCsrfFromReq(r)
-			expectedCSRF := key.CSRFKey
+			expectedCSRF := jwt2.CSRFKey
 
 			if actualCSRF != expectedCSRF {
 				handler.CoreResponse(w, http.StatusForbidden, nil)

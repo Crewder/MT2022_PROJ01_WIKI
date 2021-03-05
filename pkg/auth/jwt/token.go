@@ -7,15 +7,14 @@ import (
 	"time"
 )
 
+type TokenInterface interface {
+	CreateNewTokens() (authTokenString, csrfSecret string, err error)
+	CreateAuthTokenString(csrfSecret string) (authTokenString string, err error)
+}
+
 type Claims struct {
 	CSRF string `json:"CSRF"`
 	jwt.StandardClaims
-}
-
-// Struct for the request body
-type Credentials struct {
-	Password string `json:"password"`
-	Email    string `json:"email"`
 }
 
 func CreateNewTokens() (authTokenString, csrfSecret string, err error) {
