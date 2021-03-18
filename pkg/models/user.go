@@ -9,10 +9,10 @@ import (
 
 type User struct {
 	gorm.Model
-	ID       uint   `json:"ID"`
-	Name     string `json:"Name"`
-	Email    string `json:"Email"`
-	Password string `json:"Password"`
+	ID       uint   `json:"ID" gorm:"not null"`
+	Name     string `json:"Name" gorm:"not null"`
+	Email    string `json:"Email" gorm:"not null"`
+	Password string `json:"Password" gorm:"not null"`
 }
 
 func init() {

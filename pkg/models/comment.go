@@ -7,11 +7,11 @@ import (
 
 type Comment struct {
 	gorm.Model
-	UserId    int     `json:"UserId"`
+	UserId    int     `json:"UserId" gorm:"not null"`
 	User      User    `gorm:"foreignKey:UserId"`
-	ArticleId int     `json:"ArticleId"`
+	ArticleId int     `json:"ArticleId" gorm:"not null"`
 	Article   Article `gorm:"foreignKey:ArticleId"`
-	Comment   string  `json:"Comment"`
+	Comment   string  `json:"Comment" gorm:"not null"`
 }
 
 type Comments []Comment
