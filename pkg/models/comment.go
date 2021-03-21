@@ -32,3 +32,13 @@ func GetAllCommentsByArticle(articleId string) []Comment {
 	db.Where("article_id = ?", articleId).Find(&comments)
 	return comments
 }
+
+func GetComment(id string) *Comment {
+	var comment Comment
+	db.Where("id = ?", id).Find(&comment)
+	return &comment
+}
+
+func DeleteComment(comment *Comment) {
+	db.Delete(&comment)
+}
