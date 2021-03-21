@@ -35,6 +35,7 @@ func Router() http.Handler {
 
 	// -------- Admin Route
 	PrivateRouter.Put("/comment/{id}", handler.UpdateComment)
+	PrivateRouter.Delete("/comment/{id}", handler.DeleteComment)
 	PrivateRouter.Get("/users", handler.GetUsers)
 	PrivateRouter.Get("/user/{id}", handler.GetUser)
 
