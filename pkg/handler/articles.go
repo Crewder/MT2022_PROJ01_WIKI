@@ -52,3 +52,12 @@ func UpdateArticle(w http.ResponseWriter, r *http.Request) {
 
 	CoreResponse(w, http.StatusOK, newArticle)
 }
+
+func DeleteArticle(w http.ResponseWriter, r *http.Request) {
+	slug := chi.URLParam(r, "slug")
+
+	article := models.GetArticleBySlug(slug)
+	models.DeleteArticle(article)
+
+	CoreResponse(w, http.StatusOK, article)
+}
