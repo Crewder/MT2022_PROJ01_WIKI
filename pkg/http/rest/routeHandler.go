@@ -11,7 +11,7 @@ import (
 
 func Router() http.Handler {
 	router := chi.NewRouter()
-	router.Use(middleware.CORSMiddleware) // Configure CORS
+	router.Use(middleware.CORSMiddleware)
 
 	// -------- Anonymous route  --------//
 	router.Post("/user/login", jwt.AuthUsers)
@@ -22,7 +22,8 @@ func Router() http.Handler {
 	// -------- Private Route  --------//
 	// -------- Config
 	PrivateRouter := router.Group(nil)
-	PrivateRouter.Use(middleware.AuthentificationMiddleware) // Verify the JwtToken and CSRF
+
+	PrivateRouter.Use(middleware.AuthentificationMiddleware)
 
 	// -------- Private Route
 	PrivateRouter.Post("/article/create", handler.CreateArticle)
@@ -34,6 +35,7 @@ func Router() http.Handler {
 	// -------- Admin Route
 	PrivateRouter.Get("/users", handler.GetUsers)
 	PrivateRouter.Get("/user/{id}", handler.GetUser)
+	//PrivateRouter.Put("/role", handler.UpdateRole)
 
 	return router
 }

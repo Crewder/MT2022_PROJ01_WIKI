@@ -20,7 +20,6 @@ type Credentials struct {
 func AuthUsers(w http.ResponseWriter, r *http.Request) {
 	var creds Credentials
 
-	//TODO retourne EOF si passe dans le authorizher
 	err := json.NewDecoder(r.Body).Decode(&creds)
 	Users := models.GetUserByEmail(creds.Email)
 
