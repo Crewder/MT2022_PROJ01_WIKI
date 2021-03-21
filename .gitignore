@@ -21,3 +21,4 @@ ApexSQL
 *.DS_Store
 
 .idea
+vendor/
