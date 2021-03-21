@@ -556,6 +556,58 @@ http://localhost:8080/comment/{id}
 ]
 ```
 
+<a name="updatecomment"/>
+
+## Mise à jour d'un commentaire
+
+**PUT** - Mise à jour d'un commentaire
+#### Request Url
+```
+http://localhost:8080/comment/{id}
+```
+#### Request Response
+```json
+[
+    {
+        "ID": 1,
+        "CreatedAt": "2021-02-20T22:49:58.826+01:00",
+        "UpdatedAt": "2021-03-21T14:46:11.068+01:00",
+        "DeletedAt": null,
+        "UserId": 1,
+        "User": {
+            "CreatedAt": "0001-01-01T00:00:00Z",
+            "UpdatedAt": "0001-01-01T00:00:00Z",
+            "DeletedAt": null,
+            "ID": 0,
+            "Name": "",
+            "Email": "",
+            "Password": ""
+        },
+        "ArticleId": 2,
+        "Article": {
+            "ID": 0,
+            "CreatedAt": "0001-01-01T00:00:00Z",
+            "UpdatedAt": "0001-01-01T00:00:00Z",
+            "DeletedAt": null,
+            "UserId": 0,
+            "User": {
+                "CreatedAt": "0001-01-01T00:00:00Z",
+                "UpdatedAt": "0001-01-01T00:00:00Z",
+                "DeletedAt": null,
+                "ID": 0,
+                "Name": "",
+                "Email": "",
+                "Password": ""
+            },
+            "Title": "",
+            "Content": "",
+            "Slug": "vache"
+        },
+        "Comment": "J'aime pas les pistaches"
+    }
+]
+```
+
 <a name="user"/>
 
 # Utilisateur
