@@ -26,3 +26,24 @@ func GetCommentsByArticle(w http.ResponseWriter, r *http.Request) {
 	comments := models.GetAllCommentsByArticle(articleId)
 	CoreResponse(w, http.StatusOK, comments)
 }
+
+func UpdateComment(w http.ResponseWriter, r *http.Request) {
+	var err error
+
+	id := chi.URLParam(r, "id")
+
+	comment := models.GetComment(id)
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = json.Unmarshal(body, &comment)
+
+	models.UpdateComment(comment)
+
+	newComment := models.GetComment(id)
+
+	CoreResponse(w, http.StatusOK, newComment)
+}

@@ -27,6 +27,7 @@ func Router() http.Handler {
 	PrivateRouter.Post("/article/create", handler.CreateArticle)
 	PrivateRouter.Put("/article/{slug}", handler.UpdateArticle)
 	PrivateRouter.Post("/comment/create", handler.CreateComment)
+	PrivateRouter.Put("/comment/{id}", handler.UpdateComment)
 	PrivateRouter.Get("/users", handler.GetUsers)
 	PrivateRouter.Get("/user/{id}", handler.GetUser)
 
