@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"github.com/casbin/casbin"
 	"github.com/go-chi/chi"
 	"github.com/gowiki-api/pkg/auth/jwt"
 	"github.com/gowiki-api/pkg/handler"
@@ -12,10 +11,7 @@ import (
 
 func Router() http.Handler {
 	router := chi.NewRouter()
-	//router.Use(middleware.CORSMiddleware) // Configure CORS
-
-	e := casbin.NewEnforcer("pkg/auth/roles/auth_model.conf", "pkg/auth/roles/auth_policy.csv")
-	router.Use(middleware.Authorizer(e))
+	router.Use(middleware.CORSMiddleware) // Configure CORS
 
 	// -------- Anonymous route  --------//
 	router.Post("/user/login", jwt.AuthUsers)
@@ -23,19 +19,17 @@ func Router() http.Handler {
 	router.Get("/article/{slug}", handler.GetArticle)
 	router.Get("/articles", handler.GetArticles)
 
-	// -------- Public route  --------//
-	router.Post("/user/logout", jwt.Logout)
-	router.Get("/comment/{id}", handler.GetCommentsByArticle)
-
 	// -------- Private Route  --------//
 	// -------- Config
 	PrivateRouter := router.Group(nil)
-	//PrivateRouter.Use(middleware.TokenMiddleware) // Verify the JwtToken and CSRF
+	PrivateRouter.Use(middleware.AuthentificationMiddleware) // Verify the JwtToken and CSRF
 
 	// -------- Private Route
 	PrivateRouter.Post("/article/create", handler.CreateArticle)
 	PrivateRouter.Put("/article/{slug}", handler.UpdateArticle)
 	PrivateRouter.Post("/comment/create", handler.CreateComment)
+	PrivateRouter.Post("/user/logout", jwt.Logout)
+	PrivateRouter.Get("/comment/{id}", handler.GetCommentsByArticle)
 
 	// -------- Admin Route
 	PrivateRouter.Get("/users", handler.GetUsers)

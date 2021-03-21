@@ -16,14 +16,9 @@ type TokenInterface interface {
 	CreateAuthTokenString(csrfSecret string) (authTokenString string, err error)
 }
 
-type Claims struct {
-	CSRF string `json:"CSRF"`
-	jwt.StandardClaims
-}
-
-func CreateNewTokens() (authTokenString, csrfSecret string, err error) {
+func CreateNewTokens(role string) (authTokenString, csrfSecret string, err error) {
 	csrfSecret = CSRFKey
-	authTokenString, err = CreateAuthTokenString(csrfSecret)
+	authTokenString, err = CreateAuthTokenString(csrfSecret, role)
 
 	if err != nil {
 		return
@@ -41,16 +36,17 @@ func SetCookies(w http.ResponseWriter, authTokenString string) {
 	http.SetCookie(w, &authCookie)
 }
 
-func CreateAuthTokenString(csrfSecret string) (authTokenString string, err error) {
+func CreateAuthTokenString(csrfSecret string, role string) (authTokenString string, err error) {
 	expirationTime := time.Now().Add(20 * time.Minute).Unix()
 
-	authClaims := &Claims{
-		CSRF: csrfSecret,
-		StandardClaims: jwt.StandardClaims{
-			NotBefore: time.Now().Unix(),
-			ExpiresAt: expirationTime,
-			IssuedAt:  time.Now().Unix(),
+	authClaims := &jwt.MapClaims{
+		"data": map[string]string{
+			"Role": role,
+			"CSRF": csrfSecret,
 		},
+		"NotBefore": time.Now().Unix(),
+		"ExpiresAt": expirationTime,
+		"IssuedAt":  time.Now().Unix(),
 	}
 	authJwt := jwt.NewWithClaims(jwt.SigningMethodHS256, authClaims)
 	authTokenString, err = authJwt.SignedString(JwtKey)

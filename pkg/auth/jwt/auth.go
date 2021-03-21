@@ -36,7 +36,7 @@ func AuthUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authTokenString, csrfSecret, err := CreateNewTokens()
+	authTokenString, csrfSecret, err := CreateNewTokens(Users.Role)
 
 	SetCookies(w, authTokenString)
 	if err != nil {

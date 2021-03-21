@@ -511,4 +511,4 @@ null
 
 
 # Modèle de données
-![](pkg/template/assets/dbwiki.png)
+![](doc/dbwiki.png)

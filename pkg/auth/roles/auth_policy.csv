@@ -1,5 +1,4 @@
 p,admin,/user/login,POST
-p,anonymous,/user/login,POST
 p,anonymous,/user/create,POST
 p,anonymous,/article/*,GET
 p,anonymous,/articles,GET
