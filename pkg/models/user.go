@@ -20,6 +20,17 @@ func init() {
 	_ = db.AutoMigrate(&User{})
 }
 
+func Exists(id uint) bool {
+	exist := false
+	var getUser User
+	anyUser := db.Where("ID = ?", id).Find(&getUser)
+
+	if anyUser != nil {
+		exist = true
+	}
+	return exist
+}
+
 func GetAllUsers() []User {
 	var Users []User
 	db.Find(&Users)
@@ -36,6 +47,7 @@ func NewUser(u *User) {
 	if u == nil {
 		log.Fatal(u)
 	}
+	u.Role = "member"
 	db.Create(&u)
 }
 

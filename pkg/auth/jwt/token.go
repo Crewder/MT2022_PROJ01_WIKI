@@ -2,10 +2,14 @@ package jwt
 
 import (
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gowiki-api/pkg/storage"
 	_ "github.com/joho/godotenv"
 	"net/http"
 	"time"
 )
+
+var JwtKey = []byte(storage.GoDotEnvVariable("JWTKey"))
+var CSRFKey = storage.GoDotEnvVariable("CSRFKey")
 
 type TokenInterface interface {
 	CreateNewTokens() (authTokenString, csrfSecret string, err error)

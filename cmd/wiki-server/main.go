@@ -6,6 +6,7 @@ import (
 )
 
 func main() {
+
 	router := rest.Router()
 	_ = http.ListenAndServe(":8080", router)
 }
