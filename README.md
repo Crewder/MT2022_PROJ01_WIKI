@@ -67,12 +67,14 @@ go run main.go
 | PUT | article/{slug} | Mise à jour d'un article |
 | GET | article/{slug} | Récupération d'un article |
 |GET | articles | Récupération de tous les articles |
+|DELETE | article{slug} | Suppression d'un article |
 
 
 | Méthodes | Endpoint | Action |
 |---|---|---|
 |POST| comment/create | Création d'un commentaire |
 |GET| comment/{id} | Récupération des commentaires d'un article|
+|DELETE| comment/{id} | Suppression d'un commentaire|
 
 | Méthodes | Endpoint | Action |
 |---|---|---|
