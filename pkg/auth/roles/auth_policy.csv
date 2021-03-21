@@ -1,4 +1,10 @@
-p, admin, /*, *
-p, anonymous, user/login, *
-p, member, /logout, *
-g,fl@hetic.net,admin
+p,admin,/user/login,POST
+p,anonymous,/user/login,POST
+p,anonymous,/user/create,POST
+p,anonymous,/article/*,GET
+p,anonymous,/articles,GET
+p,member,/user/logout,POST
+p,member,/comment/*,GET
+p,member,/article/create,POST
+p,member,/article/*,PUT
+p,member,/comment/create,POST

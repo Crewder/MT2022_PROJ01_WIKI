@@ -2,15 +2,18 @@ package middleware
 
 import (
 	"context"
+	"encoding/json"
+	"github.com/casbin/casbin"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/cors"
 	jwt2 "github.com/gowiki-api/pkg/auth/jwt"
 	"github.com/gowiki-api/pkg/handler"
+	"github.com/gowiki-api/pkg/models"
 	"log"
 	"net/http"
 )
 
-func TokenAuthenMiddleware(next http.Handler) http.Handler {
+func TokenMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		AuthCookie, authErr := r.Cookie("AuthToken")
 		if authErr != nil {
@@ -69,5 +72,39 @@ func GetCsrfFromReq(r *http.Request) string {
 		return csrfFromForm
 	} else {
 		return r.Header.Get("X-CSRF-Token")
+	}
+}
+
+func Authorizer(e *casbin.Enforcer) func(next http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+
+		fn := func(w http.ResponseWriter, r *http.Request) {
+
+			// Le decode permet de recuperé les infos dans le USer mais delete les infos de la request
+
+			user := &models.User{}
+			_ = json.NewDecoder(r.Body).Decode(user)
+			//	user = models.GetUserByEmail(user.Email)
+			//	role := user.Role
+			//	if role == "" {
+			//		role = "anonymous"
+			//	}
+			//	if role == "member" || role == "admin" {
+			//		if !models.Exists(user.ID) {
+			//			handler.CoreResponse(w, http.StatusForbidden, nil)
+			//		}
+			//	}
+
+			role := "admin"
+			method := r.Method
+			path := r.URL.Path
+			if e.Enforce(role, path, method) {
+				next.ServeHTTP(w, r)
+			} else {
+				handler.CoreResponse(w, http.StatusForbidden, nil)
+			}
+		}
+
+		return http.HandlerFunc(fn)
 	}
 }
