@@ -29,6 +29,15 @@ func GetCommentsByArticle(w http.ResponseWriter, r *http.Request) {
 	CoreResponse(w, http.StatusOK, comments)
 }
 
+func DeleteComment(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+
+	comment := models.GetComment(id)
+	models.DeleteComment(comment)
+
+	CoreResponse(w, http.StatusOK, comment)
+}
+
 func UpdateComment(w http.ResponseWriter, r *http.Request) {
 	var err error
 
