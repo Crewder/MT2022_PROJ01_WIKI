@@ -17,7 +17,9 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 
 	var comment models.Comment
 	err = json.Unmarshal(body, &comment)
-	models.NewComment(&comment)
+	if !models.NewComment(&comment) {
+		CoreResponse(w, http.StatusNotAcceptable, nil)
+	}
 	CoreResponse(w, http.StatusCreated, nil)
 }
 

@@ -2,7 +2,6 @@ package models
 
 import (
 	"gorm.io/gorm"
-	"log"
 )
 
 type Comment struct {
@@ -20,11 +19,18 @@ func init() {
 	_ = db.AutoMigrate(&Comment{})
 }
 
-func NewComment(comment *Comment) {
-	if comment == nil {
-		log.Fatal(comment)
+func NewComment(comment *Comment) bool {
+	if comment == nil || comment.Comment == "" {
+		return false
 	}
-	db.Create(&comment)
+
+	result := db.Create(&comment)
+
+	if result.Error != nil {
+		return false
+	}
+
+	return true
 }
 
 func GetAllCommentsByArticle(articleId string) []Comment {
