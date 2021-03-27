@@ -59,5 +59,5 @@ func DeleteArticle(w http.ResponseWriter, r *http.Request) {
 	article := models.GetArticleBySlug(slug)
 	models.DeleteArticle(article)
 
-	CoreResponse(w, http.StatusOK, article)
+	CoreResponse(w, http.StatusNoContent, article)
 }
