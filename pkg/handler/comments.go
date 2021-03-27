@@ -35,7 +35,7 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 	comment := models.GetComment(id)
 	models.DeleteComment(comment)
 
-	CoreResponse(w, http.StatusOK, comment)
+	CoreResponse(w, http.StatusNoContent, comment)
 }
 
 func UpdateComment(w http.ResponseWriter, r *http.Request) {
