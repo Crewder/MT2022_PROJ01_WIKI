@@ -509,42 +509,24 @@ http://localhost:8080/comment/{id}
     }
 ]
 ```
-
-<<<<<<< HEAD
 <a name="updatecomment"/>
 
 ## Mise à jour d'un commentaire
 
 **PUT** - Mise à jour d'un commentaire
-=======
-<a name="deletecomment"/>
 
-## Suppression d'un commentaire
-
-**DELETE** - Supprimer un commentaire
-
->>>>>>> Update readme
 #### Request Url
 ```
 http://localhost:8080/comment/{id}
 ```
 #### Request Response
-<<<<<<< HEAD
-```json
-=======
 ``` json
->>>>>>> Update readme
 [
     {
         "ID": 1,
         "CreatedAt": "2021-02-20T22:49:58.826+01:00",
-<<<<<<< HEAD
         "UpdatedAt": "2021-03-21T14:46:11.068+01:00",
         "DeletedAt": null,
-=======
-        "UpdatedAt": "2021-02-20T22:49:58.826+01:00",
-        "DeletedAt": "2021-03-21T14:22:48.140445461+01:00",
->>>>>>> Update readme
         "UserId": 1,
         "User": {
             "CreatedAt": "0001-01-01T00:00:00Z",
@@ -575,11 +557,7 @@ http://localhost:8080/comment/{id}
             "Content": "",
             "Slug": "vache"
         },
-<<<<<<< HEAD
-        "Comment": "J'aime pas les pistaches"
-=======
         "Comment": "J'aime les pistaches"
->>>>>>> Update readme
     }
 ]
 ```
