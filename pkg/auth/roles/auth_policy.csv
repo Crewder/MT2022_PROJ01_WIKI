@@ -4,4 +4,5 @@ p,member,/article/create,POST
 p,member,/article/*,PUT
 p,member,/comment/create,POST
 p,admin,/users,GET
-p,admin,/user/*,GET
+p,admin,/*,*
+
