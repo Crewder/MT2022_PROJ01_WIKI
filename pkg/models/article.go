@@ -64,3 +64,7 @@ func SlugUnique(title string) string {
 
 	return slug
 }
+
+func DeleteArticle(article *Article) {
+	db.Delete(&article)
+}

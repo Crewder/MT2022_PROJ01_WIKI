@@ -49,3 +49,12 @@ func UpdateComment(w http.ResponseWriter, r *http.Request) {
 
 	CoreResponse(w, http.StatusOK, newComment)
 }
+
+func DeleteComment(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+
+	comment := models.GetComment(id)
+	models.DeleteComment(comment)
+
+	CoreResponse(w, http.StatusNoContent, comment)
+}
