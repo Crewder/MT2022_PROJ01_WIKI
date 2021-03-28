@@ -35,7 +35,6 @@ func Router() http.Handler {
 	// -------- Admin Route
 	PrivateRouter.Get("/users", handler.GetUsers)
 	PrivateRouter.Get("/user/{id}", handler.GetUser)
-	//PrivateRouter.Put("/role", handler.UpdateRole)
 
 	return router
 }

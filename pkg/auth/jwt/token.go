@@ -11,13 +11,6 @@ import (
 var JwtKey = []byte(storage.GoDotEnvVariable("JWTKey"))
 var CSRFKey = storage.GoDotEnvVariable("CSRFKey")
 
-type TokenInterface interface {
-	CreateNewTokens() (authTokenString, csrfSecret string, err error)
-	CreateAuthTokenString(csrfSecret string) (authTokenString string, err error)
-	SetCookies()
-	ClearSession()
-}
-
 func CreateNewTokens(role string) (authTokenString, csrfSecret string, err error) {
 	csrfSecret = CSRFKey
 	authTokenString, err = CreateAuthTokenString(csrfSecret, role)

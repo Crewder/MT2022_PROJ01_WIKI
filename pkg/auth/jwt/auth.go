@@ -7,11 +7,6 @@ import (
 	"net/http"
 )
 
-type AuthInterface interface {
-	AuthUsers(w http.ResponseWriter, r *http.Request)
-	Logout(w http.ResponseWriter, r *http.Request)
-}
-
 type Credentials struct {
 	Password string `json:"password"`
 	Email    string `json:"email"`

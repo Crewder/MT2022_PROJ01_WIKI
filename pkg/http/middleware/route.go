@@ -15,7 +15,7 @@ import (
 // Verify JWT Token validity and the CSRF Inside the JWt Token
 // will return 401 if CSRF OR JWT is no valid
 // Then Verify the Policy
-//
+// will return 403 if Policy
 func AuthentificationMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
@@ -58,19 +58,11 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 					if role == "" {
 						role = "anonymous"
 					}
-					//if role == "member" || role == "admin" {
-					//	if !models.Exists(USer.ID) {
-					//				handler.CoreResponse(w, http.StatusForbidden, nil)
-					//			}
-					//		}
-
-					if r.URL.Path == "/role" && role != "admin" && r.Method == "PUT" {
-						handler.CoreResponse(w, http.StatusForbidden, nil)
-					}
 
 					//Create an enforcer with path for the policy in csv file and the model
 					// We will verify with this enforcer if the action is allowed for this role
 					e := casbin.NewEnforcer("pkg/auth/roles/auth_model.conf", "pkg/auth/roles/auth_policy.csv")
+
 					method := r.Method
 					path := r.URL.Path
 					if e.Enforce(role, path, method) {
