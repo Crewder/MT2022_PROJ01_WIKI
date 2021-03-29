@@ -68,11 +68,15 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 					}
 
 					if ok {
-
 						if role != "admin" {
 							if method == "DELETE" || method == "PUT" {
 								if strings.Contains(path, "Article ") {
-									Article := models.GetArticleBySlug(keys[0])
+									Article, err := models.GetArticleBySlug(keys[0])
+
+									if !err {
+										handler.CoreResponse(w, http.StatusBadRequest, nil)
+									}
+
 									if Article.UserId != userid {
 										handler.CoreResponse(w, http.StatusForbidden, nil)
 									}
