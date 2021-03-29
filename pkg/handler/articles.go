@@ -74,7 +74,12 @@ func UpdateArticle(w http.ResponseWriter, r *http.Request) {
 func DeleteArticle(w http.ResponseWriter, r *http.Request) {
 	slug := chi.URLParam(r, "slug")
 
-	article := models.GetArticleBySlug(slug)
+	article, result := models.GetArticleBySlug(slug)
+
+	if !result {
+		CoreResponse(w, http.StatusInternalServerError, nil)
+	}
+
 	models.DeleteArticle(article)
 
 	CoreResponse(w, http.StatusNoContent, article)
