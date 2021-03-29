@@ -8,12 +8,12 @@ Un token JWT est composé de 3 partie :
 - le _Payload_ contiendra toute les informations qu'on souhaiterait lui passé ainsi les timestamp de création et d'expiration
 - La _Signature_ reprend le header et le secret, le tout crypter avec l'algorithme définie dans le _Header_
 
-![](/Items (1).png)
+![](Items (1).png)
 
 
 # Fonctionnement
 
-![](doc/items.png)
+![](items.png)
 
 
 ## Pour décrypter le token JWT :
