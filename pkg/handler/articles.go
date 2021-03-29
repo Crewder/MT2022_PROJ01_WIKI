@@ -2,11 +2,12 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/go-chi/chi"
-	"github.com/gowiki-api/pkg/models"
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/go-chi/chi"
+	"github.com/gowiki-api/pkg/models"
 )
 
 func CreateArticle(w http.ResponseWriter, r *http.Request) {
@@ -16,19 +17,26 @@ func CreateArticle(w http.ResponseWriter, r *http.Request) {
 	}
 	var article models.Article
 	err = json.Unmarshal(body, &article)
-	models.NewArticle(&article)
+	if !models.NewArticle(&article) {
+		CoreResponse(w, http.StatusInternalServerError, nil)
+	}
 	CoreResponse(w, http.StatusCreated, nil)
 }
 
 func GetArticles(w http.ResponseWriter, r *http.Request) {
-	articles := models.GetAllArticles()
+	articles, result := models.GetAllArticles()
+	if !result {
+		CoreResponse(w, http.StatusInternalServerError, nil)
+	}
 	CoreResponse(w, http.StatusOK, articles)
 }
 
 func GetArticle(w http.ResponseWriter, r *http.Request) {
 	slug := chi.URLParam(r, "slug")
-	articleDetails := models.GetArticleBySlug(slug)
-
+	articleDetails, result := models.GetArticleBySlug(slug)
+	if !result {
+		CoreResponse(w, http.StatusInternalServerError, nil)
+	}
 	CoreResponse(w, http.StatusOK, articleDetails)
 }
 
@@ -37,18 +45,28 @@ func UpdateArticle(w http.ResponseWriter, r *http.Request) {
 
 	slug := chi.URLParam(r, "slug")
 
-	article := models.GetArticleBySlug(slug)
-
+	article, result := models.GetArticleBySlug(slug)
+	if !result {
+		CoreResponse(w, http.StatusInternalServerError, nil)
+	}
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	err = json.Unmarshal(body, &article)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	models.UpdateArticle(article)
+	if !models.UpdateArticle(article) {
+		CoreResponse(w, http.StatusInternalServerError, nil)
+	}
 
-	newArticle := models.GetArticleBySlug(slug)
+	newArticle, result := models.GetArticleBySlug(slug)
+	if !result {
+		CoreResponse(w, http.StatusInternalServerError, nil)
+	}
 
 	CoreResponse(w, http.StatusOK, newArticle)
 }
