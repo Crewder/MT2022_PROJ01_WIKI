@@ -1,11 +1,12 @@
 package jwt
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gowiki-api/pkg/storage"
 	_ "github.com/joho/godotenv"
-	"net/http"
-	"time"
 )
 
 var JwtKey = []byte(storage.GoDotEnvVariable("JWTKey"))
