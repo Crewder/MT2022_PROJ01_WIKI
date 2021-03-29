@@ -2,9 +2,10 @@ package jwt
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/gowiki-api/pkg/handler"
 	"github.com/gowiki-api/pkg/models"
-	"net/http"
 )
 
 type Credentials struct {

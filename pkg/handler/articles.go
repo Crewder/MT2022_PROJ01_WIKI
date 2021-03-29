@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/gowiki-api/pkg/models"
+	"github.com/gowiki-api/pkg/tools"
 )
 
 func CreateArticle(w http.ResponseWriter, r *http.Request) {
@@ -17,6 +18,12 @@ func CreateArticle(w http.ResponseWriter, r *http.Request) {
 	}
 	var article models.Article
 	json.Unmarshal(body, article)
+	claims, error := tools.ExtractDataToken(w, r)
+	if error {
+		CoreResponse(w, http.StatusInternalServerError, nil)
+	}
+	UintData := claims["UintData"].(map[string]interface{})
+	article.UserId = UintData["id"].(uint)
 
 	if !models.NewArticle(&article) {
 		CoreResponse(w, http.StatusInternalServerError, nil)
