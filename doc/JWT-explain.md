@@ -13,7 +13,7 @@ Un token JWT est composé de 3 partie :
 
 # Fonctionnement
 
-![](/Items.png)
+![](Items.png)
 
 
 ## Pour décrypter le token JWT :
