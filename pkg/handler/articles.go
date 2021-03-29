@@ -77,7 +77,7 @@ func DeleteArticle(w http.ResponseWriter, r *http.Request) {
 	article, result := models.GetArticleBySlug(slug)
 
 	if !result {
-		CoreResponse(w, http.StatusInternalServerError, nil)
+		CoreResponse(w, http.StatusBadRequest, nil)
 	}
 
 	models.DeleteArticle(article)

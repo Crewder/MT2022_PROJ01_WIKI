@@ -25,7 +25,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !models.NewUser(user) {
-		CoreResponse(w, http.StatusInternalServerError, nil)
+		CoreResponse(w, http.StatusBadRequest, nil)
 	}
 
 	CoreResponse(w, http.StatusCreated, nil)
