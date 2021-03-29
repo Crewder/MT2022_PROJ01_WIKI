@@ -43,7 +43,6 @@ func CreateAuthTokenString(csrfSecret string, user *models.User) (authTokenStrin
 		"Uintdata": map[string]uint{
 			"Id": user.ID,
 		},
-
 		"NotBefore": time.Now().Unix(),
 		"ExpiresAt": expirationTime,
 		"IssuedAt":  time.Now().Unix(),
