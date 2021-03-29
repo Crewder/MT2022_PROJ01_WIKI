@@ -48,3 +48,7 @@ func GetComment(id string) *Comment {
 func DeleteComment(comment *Comment) {
 	db.Delete(&comment)
 }
+
+func UpdateComment(comment *Comment) {
+	db.Save(&comment)
+}

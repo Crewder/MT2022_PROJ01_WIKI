@@ -2,25 +2,18 @@ package jwt
 
 import (
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gowiki-api/pkg/storage"
 	_ "github.com/joho/godotenv"
 	"net/http"
 	"time"
 )
 
-type Claims struct {
-	CSRF string `json:"CSRF"`
-	jwt.StandardClaims
-}
+var JwtKey = []byte(storage.GoDotEnvVariable("JWTKey"))
+var CSRFKey = storage.GoDotEnvVariable("CSRFKey")
 
-// Struct for the request body
-type Credentials struct {
-	Password string `json:"password"`
-	Email    string `json:"email"`
-}
-
-func CreateNewTokens() (authTokenString, csrfSecret string, err error) {
+func CreateNewTokens(role string) (authTokenString, csrfSecret string, err error) {
 	csrfSecret = CSRFKey
-	authTokenString, err = CreateAuthTokenString(csrfSecret)
+	authTokenString, err = CreateAuthTokenString(csrfSecret, role)
 
 	if err != nil {
 		return
@@ -38,16 +31,17 @@ func SetCookies(w http.ResponseWriter, authTokenString string) {
 	http.SetCookie(w, &authCookie)
 }
 
-func CreateAuthTokenString(csrfSecret string) (authTokenString string, err error) {
+func CreateAuthTokenString(csrfSecret string, role string) (authTokenString string, err error) {
 	expirationTime := time.Now().Add(20 * time.Minute).Unix()
 
-	authClaims := &Claims{
-		CSRF: csrfSecret,
-		StandardClaims: jwt.StandardClaims{
-			NotBefore: time.Now().Unix(),
-			ExpiresAt: expirationTime,
-			IssuedAt:  time.Now().Unix(),
+	authClaims := &jwt.MapClaims{
+		"data": map[string]string{
+			"Role": role,
+			"CSRF": csrfSecret,
 		},
+		"NotBefore": time.Now().Unix(),
+		"ExpiresAt": expirationTime,
+		"IssuedAt":  time.Now().Unix(),
 	}
 	authJwt := jwt.NewWithClaims(jwt.SigningMethodHS256, authClaims)
 	authTokenString, err = authJwt.SignedString(JwtKey)

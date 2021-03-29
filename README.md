@@ -39,15 +39,9 @@ Une API qui gère des wikis. On peut se connecter, créer un compte, créer un a
 
 ### Pré requis
 
-**Package Manager**
-
- ```
- go get github.com/Masterminds/glide
- ```
-
 **Installation des dépendances**
 ```
-glide up
+go mod vendor
 ```
 
 
@@ -732,4 +726,4 @@ null
 
 
 # Modèle de données
-![](pkg/template/assets/dbwiki.png)
+![](doc/dbwiki.png)

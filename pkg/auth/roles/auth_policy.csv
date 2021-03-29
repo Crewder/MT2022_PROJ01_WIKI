@@ -1,0 +1,11 @@
+p,member,/user/logout,POST
+p,member,/comment/*,Update
+p,member,/comment/*,GET
+p,member,/comment/*,DELETE
+p,member,/article/create,POST
+p,member,/article/*,PUT
+p,member,/article/*,DELETE
+p,member,/comment/create,POST
+p,admin,/users,GET
+p,admin,/*,*
+
