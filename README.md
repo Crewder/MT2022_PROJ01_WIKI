@@ -20,9 +20,12 @@ Une API qui gère des wikis. On peut se connecter, créer un compte, créer un a
    * [3.2 Mise a jour d'un article](#updatearticle)
    * [3.3 Récupération d'un article](#fetcharticle)
    * [3.4 Récupération de tous les articles](#fetchallarticle)
+   * [3.5 Suppression d'un article](#deletearticle)
 * [4. Commentaire](#comment)
     * [4.1 Création d'un commentaire](#createcomment)
     * [4.2 Récupération des commentaires lié à un article](#showcomments)
+    * [4.3 Mise a jour d'un commentaire](#updatecomment)
+    * [4.3 Suppression d'un commentaire](#deletecomment)
 * [5. Utilisateur](#user)
     * [5.1 Creation d'un utilisateur](#createuser)
     * [5.1 Récupération d'un utilisateur](#fetchuser)
@@ -65,12 +68,15 @@ go run main.go
 | PUT | article/{slug} | Mise à jour d'un article |
 | GET | article/{slug} | Récupération d'un article |
 |GET | articles | Récupération de tous les articles |
+|DELETE | article/{slug} | Suppression d'un article |
 
 
 | Méthodes | Endpoint | Action |
 |---|---|---|
 |POST| comment/create | Création d'un commentaire |
-|GET| comment/{id} | Récupération des commentaires d'un article|
+|GET| comment/{articleId} | Récupération des commentaires d'un article|
+| PUT | comment/{id} | Mise à jour d'un commentaire |
+|DELETE| comment/{id} | Suppression d'un commentaire|
 
 | Méthodes | Endpoint | Action |
 |---|---|---|
@@ -253,6 +259,116 @@ http://localhost:8080/articles
 ]
 ```
 
+<a name="deletearticle"/>
+
+## Suppression d'un article
+
+**DELETE** - Supprimer un article
+
+#### Request Url
+```
+http://localhost:8080/article/{slug}
+```
+#### Request Response
+``` json
+[
+   
+    {
+        "ID": 1,
+        "CreatedAt": "2021-02-15T22:25:34+01:00",
+        "UpdatedAt": "2021-02-15T22:25:37+01:00",
+        "DeletedAt":  "2021-03-21T14:22:48.140445461+01:00",
+        "UserId": 0,
+        "User": {
+            "CreatedAt": "0001-01-01T00:00:00Z",
+            "UpdatedAt": "0001-01-01T00:00:00Z",
+            "DeletedAt": null,
+            "ID": 0,
+            "Name": "",
+            "Email": "",
+            "Password": ""
+        },
+        "Title": "J'aime les chats",
+        "Content": "La civilisation aztèque est une civilisation d’Amérique Centrale basée dans la vallée de Mexico dès le début du XIVème siècle. Les Aztèques seront délogés par les conquistadors aux alentours de 1519. Entre-temps, ils avaient eu le temps d’atteindre un des niveaux de civilisation les plus avancés d’Amérique. Tout comme chez les Mayas, le système de croyances aztèque imposait des sacrifices humains pour les dieux. Apprenez-en plus grâce à cet article.\nPourquoi les Aztèques pratiquaient les sacrifices humains ?\n\nLes Aztèques pensaient que le sang humain était la principale nourriture des dieux, ainsi il était pour eux, tout à fait normal de pratiquer le sacrifice humain afin de s’attirer les bonnes grâces des divinités. Si les sacrifices humains avaient une fonction religieuse dans la civilisation aztèque, ils avaient également une fonction politique.\nLes sacrifices humains et la religion aztèques\n\nD’après les croyances aztèques, les sacrifices humains étaient des éléments indispensables au bon fonctionnement et à l’équilibre de l’univers. La première référence à ces pratiques se trouve dans le mythe de la création du monde. Dans celui-ci, la déesse-terre, Tlaltecuhtli, exige des sacrifices humains et refuse même d’apporter ses bienfaits à moins d’être arrosée de sang. Par la suite, deux dieux, Nanahuatzin et Tecciztecatl sont sacrifiés pour pouvoir renaître sous la forme du Soleil et de la Lune. D’autres sacrifices sont indispensables pour que le Soleil entame sa course autour de la Terre.\n\nDans la Légende des soleils, on raconte que la déesse-Terre avait donné naissance à 400 Mimixcoas, un type de dieu, et à 5 Mecitin, c’est-à-dire des humains. Tandis que les dieux s’adonnaient régulièrement à la luxure et à la fête, ils ne permettaient pas de nourrir la Terre et le Soleil. Les 5 humains furent donc chargés de les tuer afin d’utiliser leur sang pour nourrir les dieux supérieurs. On raconte également que tous les mondes dans lesquels les humains ne pratiquaient pas de sacrifices avaient été détruits par les dieux. On sacrifiait donc régulièrement des humains afin d’apaiser la colère des divinités.",
+        "Slug": "vache"
+    },
+    {
+        "ID": 2,
+        "CreatedAt": "2021-02-15T23:05:52+01:00",
+        "UpdatedAt": "2021-02-15T23:05:55+01:00",
+        "DeletedAt": null,
+        "UserId": 0,
+        "User": {
+            "CreatedAt": "0001-01-01T00:00:00Z",
+            "UpdatedAt": "0001-01-01T00:00:00Z",
+            "DeletedAt": null,
+            "ID": 0,
+            "Name": "",
+            "Email": "",
+            "Password": ""
+        },
+        "Title": "J'aime les lapins",
+        "Content": "orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+        "Slug": "vache-1"
+    }
+]
+```
+
+<a name="deletearticle"/>
+
+## Suppression d'un article
+
+**DELETE** - Supprimer un article
+
+#### Request Url
+```
+http://localhost:8080/article/{slug}
+```
+#### Request Response
+``` json
+[
+   
+    {
+        "ID": 1,
+        "CreatedAt": "2021-02-15T22:25:34+01:00",
+        "UpdatedAt": "2021-02-15T22:25:37+01:00",
+        "DeletedAt":  "2021-03-21T14:22:48.140445461+01:00",
+        "UserId": 0,
+        "User": {
+            "CreatedAt": "0001-01-01T00:00:00Z",
+            "UpdatedAt": "0001-01-01T00:00:00Z",
+            "DeletedAt": null,
+            "ID": 0,
+            "Name": "",
+            "Email": "",
+            "Password": ""
+        },
+        "Title": "J'aime les chats",
+        "Content": "La civilisation aztèque est une civilisation d’Amérique Centrale basée dans la vallée de Mexico dès le début du XIVème siècle. Les Aztèques seront délogés par les conquistadors aux alentours de 1519. Entre-temps, ils avaient eu le temps d’atteindre un des niveaux de civilisation les plus avancés d’Amérique. Tout comme chez les Mayas, le système de croyances aztèque imposait des sacrifices humains pour les dieux. Apprenez-en plus grâce à cet article.\nPourquoi les Aztèques pratiquaient les sacrifices humains ?\n\nLes Aztèques pensaient que le sang humain était la principale nourriture des dieux, ainsi il était pour eux, tout à fait normal de pratiquer le sacrifice humain afin de s’attirer les bonnes grâces des divinités. Si les sacrifices humains avaient une fonction religieuse dans la civilisation aztèque, ils avaient également une fonction politique.\nLes sacrifices humains et la religion aztèques\n\nD’après les croyances aztèques, les sacrifices humains étaient des éléments indispensables au bon fonctionnement et à l’équilibre de l’univers. La première référence à ces pratiques se trouve dans le mythe de la création du monde. Dans celui-ci, la déesse-terre, Tlaltecuhtli, exige des sacrifices humains et refuse même d’apporter ses bienfaits à moins d’être arrosée de sang. Par la suite, deux dieux, Nanahuatzin et Tecciztecatl sont sacrifiés pour pouvoir renaître sous la forme du Soleil et de la Lune. D’autres sacrifices sont indispensables pour que le Soleil entame sa course autour de la Terre.\n\nDans la Légende des soleils, on raconte que la déesse-Terre avait donné naissance à 400 Mimixcoas, un type de dieu, et à 5 Mecitin, c’est-à-dire des humains. Tandis que les dieux s’adonnaient régulièrement à la luxure et à la fête, ils ne permettaient pas de nourrir la Terre et le Soleil. Les 5 humains furent donc chargés de les tuer afin d’utiliser leur sang pour nourrir les dieux supérieurs. On raconte également que tous les mondes dans lesquels les humains ne pratiquaient pas de sacrifices avaient été détruits par les dieux. On sacrifiait donc régulièrement des humains afin d’apaiser la colère des divinités.",
+        "Slug": "vache"
+    },
+    {
+        "ID": 2,
+        "CreatedAt": "2021-02-15T23:05:52+01:00",
+        "UpdatedAt": "2021-02-15T23:05:55+01:00",
+        "DeletedAt": null,
+        "UserId": 0,
+        "User": {
+            "CreatedAt": "0001-01-01T00:00:00Z",
+            "UpdatedAt": "0001-01-01T00:00:00Z",
+            "DeletedAt": null,
+            "ID": 0,
+            "Name": "",
+            "Email": "",
+            "Password": ""
+        },
+        "Title": "J'aime les lapins",
+        "Content": "orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+        "Slug": "vache-1"
+    }
+]
+```
+
 <a name="comment"/>
 
 # Commentaire
@@ -305,6 +421,111 @@ http://localhost:8080/comment/{articleId}
         "ID": 1,
         "CreatedAt": "2021-02-20T22:49:58.826+01:00",
         "UpdatedAt": "2021-02-20T22:49:58.826+01:00",
+        "DeletedAt": null,
+        "UserId": 1,
+        "User": {
+            "CreatedAt": "0001-01-01T00:00:00Z",
+            "UpdatedAt": "0001-01-01T00:00:00Z",
+            "DeletedAt": null,
+            "ID": 0,
+            "Name": "",
+            "Email": "",
+            "Password": ""
+        },
+        "ArticleId": 2,
+        "Article": {
+            "ID": 0,
+            "CreatedAt": "0001-01-01T00:00:00Z",
+            "UpdatedAt": "0001-01-01T00:00:00Z",
+            "DeletedAt": null,
+            "UserId": 0,
+            "User": {
+                "CreatedAt": "0001-01-01T00:00:00Z",
+                "UpdatedAt": "0001-01-01T00:00:00Z",
+                "DeletedAt": null,
+                "ID": 0,
+                "Name": "",
+                "Email": "",
+                "Password": ""
+            },
+            "Title": "",
+            "Content": "",
+            "Slug": "vache"
+        },
+        "Comment": "J'aime les pistaches"
+    }
+]
+```
+
+<a name="deletecomment"/>
+
+## Suppression d'un commentaire
+
+**DELETE** - Supprimer un commentaire
+
+#### Request Url
+```
+http://localhost:8080/comment/{id}
+```
+#### Request Response
+``` json
+[
+    {
+        "ID": 1,
+        "CreatedAt": "2021-02-20T22:49:58.826+01:00",
+        "UpdatedAt": "2021-02-20T22:49:58.826+01:00",
+        "DeletedAt": "2021-03-21T14:22:48.140445461+01:00",
+        "UserId": 1,
+        "User": {
+            "CreatedAt": "0001-01-01T00:00:00Z",
+            "UpdatedAt": "0001-01-01T00:00:00Z",
+            "DeletedAt": null,
+            "ID": 0,
+            "Name": "",
+            "Email": "",
+            "Password": ""
+        },
+        "ArticleId": 2,
+        "Article": {
+            "ID": 0,
+            "CreatedAt": "0001-01-01T00:00:00Z",
+            "UpdatedAt": "0001-01-01T00:00:00Z",
+            "DeletedAt": null,
+            "UserId": 0,
+            "User": {
+                "CreatedAt": "0001-01-01T00:00:00Z",
+                "UpdatedAt": "0001-01-01T00:00:00Z",
+                "DeletedAt": null,
+                "ID": 0,
+                "Name": "",
+                "Email": "",
+                "Password": ""
+            },
+            "Title": "",
+            "Content": "",
+            "Slug": "vache"
+        },
+        "Comment": "J'aime les pistaches"
+    }
+]
+```
+<a name="updatecomment"/>
+
+## Mise à jour d'un commentaire
+
+**PUT** - Mise à jour d'un commentaire
+
+#### Request Url
+```
+http://localhost:8080/comment/{id}
+```
+#### Request Response
+``` json
+[
+    {
+        "ID": 1,
+        "CreatedAt": "2021-02-20T22:49:58.826+01:00",
+        "UpdatedAt": "2021-03-21T14:46:11.068+01:00",
         "DeletedAt": null,
         "UserId": 1,
         "User": {
