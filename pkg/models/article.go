@@ -1,11 +1,12 @@
 package models
 
 import (
-	"github.com/gowiki-api/pkg/tools"
-	"gorm.io/gorm"
 	"log"
 	"strconv"
 	"strings"
+
+	"github.com/gowiki-api/pkg/tools"
+	"gorm.io/gorm"
 )
 
 type Article struct {
@@ -23,29 +24,51 @@ func init() {
 	_ = db.AutoMigrate(&Article{})
 }
 
-func GetAllArticles() []Article {
+func GetAllArticles() ([]Article, bool) {
 	var articles []Article
-	db.Find(&articles)
-	return articles
+	result := db.Find(&articles)
+	if result.Error == nil {
+		return articles, false
+	}
+	return articles, true
 }
 
-func GetArticleBySlug(slug string) *Article {
+func GetArticleBySlug(slug string) (*Article, bool) {
 	var article Article
-	db.Where("slug = ?", slug).Find(&article)
-	return &article
+	if len(slug) <= 0 {
+		return &article, false
+	}
+	result := db.Where("slug = ?", slug).Find(&article)
+	if result.Error == nil {
+		return &article, false
+	}
+	return &article, true
 }
 
-func NewArticle(a *Article) {
+func NewArticle(a *Article) bool {
 	if a == nil {
 		log.Fatal(a)
+		return false
 	}
 	a.Slug = SlugUnique(strings.ToLower(tools.SanitizerSlug(a.Title)))
-	db.Create(&a)
+	result := db.Create(&a)
+	if result.Error != nil {
+		return false
+	}
+	return true
 }
 
-func UpdateArticle(a *Article) {
+func UpdateArticle(a *Article) bool {
+	if a == nil {
+		log.Fatal(a)
+		return false
+	}
 	a.Slug = SlugUnique(strings.ToLower(tools.SanitizerSlug(a.Title)))
-	db.Save(&a)
+	result := db.Save(&a)
+	if result.Error != nil {
+		return false
+	}
+	return true
 }
 
 func SlugUnique(title string) string {
@@ -54,7 +77,8 @@ func SlugUnique(title string) string {
 	slug := strings.ToLower(tools.SanitizerSlug(title))
 
 	for !slugValid {
-		if GetArticleBySlug(slug).Slug != "" {
+		article, result := GetArticleBySlug(slug)
+		if article.Slug != "" && result == true {
 			slug = strings.ToLower(tools.SanitizerSlug(title)) + "-" + strconv.Itoa(indexSlug)
 			indexSlug++
 		} else {
