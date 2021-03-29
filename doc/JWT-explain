@@ -12,7 +12,7 @@ Un token JWT est composé de 3 partie :
 
 # Fonctionnement
 
-![token-authentication-flow-69804c12334715c597128cd9273bca5e32ed516b62987902310efc54d1840a40.png](/.attachments/token-authentication-flow-69804c12334715c597128cd9273bca5e32ed516b62987902310efc54d1840a40-f9e81044-a112-48df-879b-b7bd7b5a7cd6.png)
+![token-authentication-flow-69804c12334715c597128cd9273bca5e32ed516b62987902310efc54d1840a40.png](https://dev.azure.com/focusinova/d3ec140e-8716-49e3-b2c8-4d4cd8fd408c/_apis/git/repositories/73fc73a1-d7e5-464a-b98b-cbc78a7edeb1/Items?path=%2FFIDOCSSLN%2FDOCS%2F.attachments%2Ftoken-authentication-flow-69804c12334715c597128cd9273bca5e32ed516b62987902310efc54d1840a40-f9e81044-a112-48df-879b-b7bd7b5a7cd6.png&download=false&resolveLfs=true&%24format=octetStream&api-version=5.0-preview.1&sanitize=true&versionDescriptor.version=master)
 
 ## Pour décrypter le token JWT :
 1. Copier le secret définie dans l'application
