@@ -34,6 +34,7 @@ func init() {
 		log.Fatal(err)
 	}
 }
+
 func GetDB() *gorm.DB {
 	return db
 }

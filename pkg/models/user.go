@@ -9,14 +9,26 @@ import (
 
 type User struct {
 	gorm.Model
-	ID       uint   `json:"ID"`
-	Name     string `json:"Name"`
-	Email    string `json:"Email"`
-	Password string `json:"Password"`
+	ID       uint   `json:"ID" gorm:"not null"`
+	Name     string `json:"Name" gorm:"not null"`
+	Email    string `json:"Email" gorm:"not null"`
+	Password string `json:"Password" gorm:"not null"`
+	Role     string `json:"Role"`
 }
 
 func init() {
 	_ = db.AutoMigrate(&User{})
+}
+
+func Exists(id uint) bool {
+	exist := false
+	var getUser User
+	anyUser := db.Where("ID = ?", id).Find(&getUser)
+
+	if anyUser != nil {
+		exist = true
+	}
+	return exist
 }
 
 func GetAllUsers() []User {
@@ -35,6 +47,7 @@ func NewUser(u *User) {
 	if u == nil {
 		log.Fatal(u)
 	}
+	u.Role = "member"
 	db.Create(&u)
 }
 
@@ -47,7 +60,7 @@ func GetUserByEmail(Email string) *User {
 	return &getUser
 }
 
-func ComparePasswords(hashedPwd string, plainPwd []byte) bool {
+func PasswordIsValid(hashedPwd string, plainPwd []byte) bool {
 	byteHash := []byte(hashedPwd)
 	err := bcrypt.CompareHashAndPassword(byteHash, plainPwd)
 	if err != nil {

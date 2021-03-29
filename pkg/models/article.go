@@ -10,11 +10,11 @@ import (
 
 type Article struct {
 	gorm.Model
-	UserId  int    `json:"UserId"`
+	UserId  int    `json:"UserId" gorm:"not null"`
 	User    User   `gorm:"foreignKey:UserId"`
-	Title   string `json:"Title"`
-	Content string `json:"Content"`
-	Slug    string `json:"Slug"`
+	Title   string `json:"Title" gorm:"not null"`
+	Content string `json:"Content" gorm:"not null"`
+	Slug    string `json:"Slug" gorm:"not null"`
 }
 
 type Articles []Article
@@ -63,4 +63,8 @@ func SlugUnique(title string) string {
 	}
 
 	return slug
+}
+
+func DeleteArticle(article *Article) {
+	db.Delete(&article)
 }
