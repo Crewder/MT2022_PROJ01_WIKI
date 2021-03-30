@@ -24,12 +24,19 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	models.NewUser(user)
+	if !models.NewUser(user) {
+		CoreResponse(w, http.StatusBadRequest, nil)
+	}
+
 	CoreResponse(w, http.StatusCreated, nil)
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
-	users := models.GetAllUsers()
+	users, result := models.GetAllUsers()
+
+	if result {
+		CoreResponse(w, http.StatusBadRequest, nil)
+	}
 	CoreResponse(w, http.StatusOK, users)
 }
 
@@ -43,6 +50,9 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	user := models.GetUserById(ID)
+	user, result := models.GetUserById(ID)
+	if result {
+		CoreResponse(w, http.StatusBadRequest, nil)
+	}
 	CoreResponse(w, http.StatusOK, user)
 }

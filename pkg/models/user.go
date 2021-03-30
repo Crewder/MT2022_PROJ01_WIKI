@@ -31,24 +31,35 @@ func Exists(id uint) bool {
 	return exist
 }
 
-func GetAllUsers() []User {
+func GetAllUsers() ([]User, bool) {
 	var Users []User
-	db.Find(&Users)
-	return Users
+	result := db.Find(&Users)
+
+	if result.Error == nil {
+		return Users, false
+	}
+	return Users, true
 }
 
-func GetUserById(Id int64) *User {
+func GetUserById(Id int64) (*User, bool) {
 	var getUser User
-	db.Where("ID = ?", Id).Find(&getUser)
-	return &getUser
+	result := db.Where("ID = ?", Id).Find(&getUser)
+	if result.Error == nil {
+		return &getUser, false
+	}
+	return &getUser, true
 }
 
-func NewUser(u *User) {
+func NewUser(u *User) bool {
 	if u == nil {
 		log.Fatal(u)
 	}
 	u.Role = "member"
-	db.Create(&u)
+	result := db.Create(&u)
+	if result.Error != nil {
+		return false
+	}
+	return true
 }
 
 func GetUserByEmail(Email string) *User {
