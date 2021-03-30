@@ -20,9 +20,9 @@ func CreateArticle(w http.ResponseWriter, r *http.Request) {
 	if error {
 		CoreResponse(w, http.StatusBadRequest, nil)
 	}
-	UintData := claims["UintData"].(map[string]interface{})
 
-	article.UserId = uint(UintData["Id"].(float64))
+	Uintdata := claims["Uintdata"].(map[string]interface{})
+	article.UserId = uint(Uintdata["Id"].(float64))
 	if !models.NewArticle(article) {
 		CoreResponse(w, http.StatusBadRequest, nil)
 	}
