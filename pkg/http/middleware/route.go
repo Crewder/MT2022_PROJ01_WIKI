@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/casbin/casbin"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	jwt2 "github.com/gowiki-api/pkg/auth/jwt"
 	"github.com/gowiki-api/pkg/handler"
@@ -57,36 +58,38 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 					ctx := context.WithValue(r.Context(), "props", claims)
 					method := r.Method
 					path := r.URL.Path
-					keys, ok := r.URL.Query()["key"]
 
 					// fetching current role on JWT
 					role := Stringdata["Role"].(string)
-					userid := Uintdata["Id"].(int)
+					userid := Uintdata["Id"].(float64)
 
 					if role == "" {
 						role = "anonymous"
 					}
 
-					if ok {
-						if role != "admin" {
-							if method == "DELETE" || method == "PUT" {
-								if strings.Contains(path, "Article ") {
-									Article, err := models.GetArticleBySlug(keys[0])
+					if role != "admin" {
+						if method == "DELETE" || method == "PUT" {
+							if strings.Contains(path, "article") {
+								slug := chi.URLParam(r, "slug")
+								Article, err := models.GetArticleBySlug(slug)
 
-									if !err {
-										handler.CoreResponse(w, http.StatusBadRequest, nil)
-									}
-
-									if Article.UserId != userid {
-										handler.CoreResponse(w, http.StatusForbidden, nil)
-									}
+								if err {
+									handler.CoreResponse(w, http.StatusBadRequest, nil)
+									return
 								}
-								if strings.Contains(path, "Comment ") {
-									Comment := models.GetComment(keys[0])
 
-									if Comment.UserId != userid {
-										handler.CoreResponse(w, http.StatusForbidden, nil)
-									}
+								if Article.UserId != (int(userid)) {
+									handler.CoreResponse(w, http.StatusForbidden, nil)
+									return
+								}
+							}
+							if strings.Contains(path, "comment") {
+								id := chi.URLParam(r, "id")
+								Comment := models.GetComment(id)
+
+								if Comment.UserId != (int(userid)) {
+									handler.CoreResponse(w, http.StatusForbidden, nil)
+									return
 								}
 							}
 						}
