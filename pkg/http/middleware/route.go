@@ -78,16 +78,21 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 									return
 								}
 
-								if Article.UserId != (int(userid)) {
+								if Article.UserId != (uint(userid)) {
 									handler.CoreResponse(w, http.StatusForbidden, nil)
 									return
 								}
 							}
 							if strings.Contains(path, "comment") {
 								id := chi.URLParam(r, "id")
-								Comment := models.GetComment(id)
+								Comment, err := models.GetComment(id)
 
-								if Comment.UserId != (int(userid)) {
+								if err {
+									handler.CoreResponse(w, http.StatusBadRequest, nil)
+									return
+								}
+
+								if Comment.UserId != (uint(userid)) {
 									handler.CoreResponse(w, http.StatusForbidden, nil)
 									return
 								}

@@ -27,7 +27,7 @@ func init() {
 func GetAllArticles() ([]Article, bool) {
 	var articles []Article
 	result := db.Find(&articles)
-	if result.Error == nil {
+	if result.Error != nil {
 		return articles, true
 	}
 	return articles, false
