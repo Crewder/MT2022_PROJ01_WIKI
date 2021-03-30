@@ -11,7 +11,7 @@ import (
 
 type Article struct {
 	gorm.Model
-	UserId  int    `json:"UserId" gorm:"not null"`
+	UserId  uint   `json:"UserId" gorm:"not null"`
 	User    User   `gorm:"foreignKey:UserId"`
 	Title   string `json:"Title" gorm:"not null"`
 	Content string `json:"Content" gorm:"not null"`
@@ -27,10 +27,10 @@ func init() {
 func GetAllArticles() ([]Article, bool) {
 	var articles []Article
 	result := db.Find(&articles)
-	if result.Error == nil {
-		return articles, false
+	if result.Error != nil {
+		return articles, true
 	}
-	return articles, true
+	return articles, false
 }
 
 func GetArticleBySlug(slug string) (*Article, bool) {
