@@ -5,6 +5,7 @@ import (
 	"github.com/gowiki-api/pkg/auth/jwt"
 	"github.com/gowiki-api/pkg/handler"
 	"github.com/gowiki-api/pkg/http/middleware"
+	_ "github.com/gowiki-api/pkg/http/middleware"
 	"net/http"
 )
 
@@ -21,6 +22,7 @@ func Router() http.Handler {
 	// -------- Private Route  --------//
 	// -------- Config
 	PrivateRouter := router.Group(nil)
+
 	PrivateRouter.Use(middleware.AuthentificationMiddleware)
 
 	// -------- Private Route
@@ -34,6 +36,8 @@ func Router() http.Handler {
 	PrivateRouter.Delete("/comment/{id}", handler.DeleteComment)
 
 	// -------- Admin Route
+	PrivateRouter.Put("/comment/{id}", handler.UpdateComment)
+	PrivateRouter.Delete("/comment/{id}", handler.DeleteComment)
 	PrivateRouter.Get("/users", handler.GetUsers)
 	PrivateRouter.Get("/user/{id}", handler.GetUser)
 

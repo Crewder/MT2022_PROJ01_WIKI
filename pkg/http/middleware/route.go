@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"github.com/casbin/casbin"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	jwt2 "github.com/gowiki-api/pkg/auth/jwt"
 	"github.com/gowiki-api/pkg/handler"
+	"github.com/gowiki-api/pkg/models"
 	"log"
 	"net/http"
+	"strings"
 )
 
 // Verify JWT Token validity and the CSRF Inside the JWt Token
@@ -40,11 +43,12 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 
 			//Fetch the data inside the token
 			claims := token.Claims.(jwt.MapClaims)
-			data := claims["data"].(map[string]interface{})
+			Stringdata := claims["Stringdata"].(map[string]interface{})
+			Uintdata := claims["Uintdata"].(map[string]interface{})
 
 			// And verify if the CSRF token on header is equals to CSRF inside the JWT
 			actualCSRF := GetCsrfFromReq(r)
-			expectedCSRF := data["CSRF"].(string)
+			expectedCSRF := Stringdata["CSRF"].(string)
 
 			if actualCSRF != fmt.Sprintf(expectedCSRF) {
 				handler.CoreResponse(w, http.StatusUnauthorized, nil)
@@ -52,19 +56,49 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 				//Jwt Validity verification
 				if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 					ctx := context.WithValue(r.Context(), "props", claims)
+					method := r.Method
+					path := r.URL.Path
 
 					// fetching current role on JWT
-					role := data["Role"].(string)
+					role := Stringdata["Role"].(string)
+					userid := Uintdata["Id"].(float64)
+
 					if role == "" {
 						role = "anonymous"
+					}
+
+					if role != "admin" {
+						if method == "DELETE" || method == "PUT" {
+							if strings.Contains(path, "article") {
+								slug := chi.URLParam(r, "slug")
+								Article, err := models.GetArticleBySlug(slug)
+
+								if err {
+									handler.CoreResponse(w, http.StatusBadRequest, nil)
+									return
+								}
+
+								if Article.UserId != (int(userid)) {
+									handler.CoreResponse(w, http.StatusForbidden, nil)
+									return
+								}
+							}
+							if strings.Contains(path, "comment") {
+								id := chi.URLParam(r, "id")
+								Comment := models.GetComment(id)
+
+								if Comment.UserId != (int(userid)) {
+									handler.CoreResponse(w, http.StatusForbidden, nil)
+									return
+								}
+							}
+						}
 					}
 
 					//Create an enforcer with path for the policy in csv file and the model
 					// We will verify with this enforcer if the action is allowed for this role
 					e := casbin.NewEnforcer("pkg/auth/roles/auth_model.conf", "pkg/auth/roles/auth_policy.csv")
 
-					method := r.Method
-					path := r.URL.Path
 					if e.Enforce(role, path, method) {
 						next.ServeHTTP(w, r.WithContext(ctx))
 					} else {
