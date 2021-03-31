@@ -94,7 +94,6 @@ go run main.go
 
 | Name | Type |Description|
 |---|---|---|
-|user_id| int| Id de l'utilisateur actif |
 |title| string| Titre de l'article |
 |content| string| Contenu de l'article |
 
@@ -107,7 +106,6 @@ http://localhost:8080/article/create
 #### Request Body
 ``` json
 {
-    "UserId": 1,
     "Title": "Vache",
     "Content":"Vache est le nom vernaculaire donné à la femelle du mammifère domestique de l'espèce Bos taurus, un ruminant appartenant à la famille des bovidés, généralement porteur de deux cornes sur le front. Les individus mâles sont appelés taureaux et les jeunes, veaux. Une génisse ou vachette, appelée aussi taure au Québec ou dans le Poitou, est une vache qui n'a pas vêlé. Descendant de plusieurs sous-espèces d'aurochs, les bovins actuels (zébus compris) sont élevés pour produire du lait et de la viande, ou comme animaux de trait. En Inde, la vache est sacrée. Le mot vache vient du latin vacca, de même sens."
 }
@@ -127,7 +125,6 @@ null
 
 | Name | Type |Description|
 |---|---|---|
-|user_id| int| Id de l'utilisateur actif |
 |title| string| Titre de l'article |
 |content| string| Contenu de l'article |
 
@@ -432,7 +429,6 @@ http://localhost:8080/article/{slug}
 
 | Name | Type |Description|
 |---|---|---|
-|user_id | int| Id de l'utilisateur actif |
 |article_id | int | Id de l'article |
 |comment | string | Commentaire de l'article |
 
@@ -444,7 +440,6 @@ http://localhost:8080/comment/create
 #### Request Body
 ``` json
 {
-    "UserId": 1,
     "ArticleId": 2,
     "comment": "J'aime les pistaches"
 }
@@ -773,7 +768,7 @@ http://localhost:8080/user/{id}
     "ID": 1,
     "Name": "Florian",
     "Email": "florian.leroy@hetic.net",
-    "Password": "test"
+    "Password": "$2a$10$EepvHXgUhENteagc0FD4kuFzBAee8LYIt7JN6SVUb5PpJA.PiLEIC"
 }
 ```
 
@@ -797,7 +792,7 @@ http://localhost:8080/users
         "ID": 1,
         "Name": "Florian",
         "Email": "florian.leroy@hetic.net",
-        "Password": "test"
+        "Password": "$2a$10$EepvHXgUhENteagc0FD4kuFzBAee8LYIt7JN6SVUb5PpJA.PiLEIC"
     },
     {
         "CreatedAt": "0001-01-01T00:00:00Z",
@@ -806,7 +801,7 @@ http://localhost:8080/users
         "ID": 2,
         "Name": "",
         "Email": "test.test@test.net",
-        "Password": "blabla"
+        "Password": "$2a$10$EepvHXgUhENteagc0FD4kuFzBAee8LYIt7JN6SVUb5PpJA.PiLEIC"
     },
     {
         "CreatedAt": "2021-02-28T17:39:56.558+01:00",
