@@ -81,6 +81,9 @@ func SlugUnique(title string) string {
 		if article.Slug != "" && result == true {
 			slug = strings.ToLower(tools.SanitizerSlug(title)) + "-" + strconv.Itoa(indexSlug)
 			indexSlug++
+		} else if article.Slug == slug {
+			slug = strings.ToLower(tools.SanitizerSlug(title)) + "-" + strconv.Itoa(indexSlug)
+			indexSlug++
 		} else {
 			slugValid = true
 		}
