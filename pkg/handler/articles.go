@@ -40,7 +40,7 @@ func GetArticles(w http.ResponseWriter, r *http.Request) {
 func GetArticle(w http.ResponseWriter, r *http.Request) {
 	slug := chi.URLParam(r, "slug")
 	articleDetails, error := models.GetArticleBySlug(slug)
-	if error {
+	if error || articleDetails.Title == "" || articleDetails.Content == "" {
 		CoreResponse(w, http.StatusBadRequest, nil)
 	}
 	CoreResponse(w, http.StatusOK, articleDetails)
