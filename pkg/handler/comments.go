@@ -23,6 +23,11 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 	Uintdata := claims["Uintdata"].(map[string]interface{})
 	comment.UserId = uint(Uintdata["Id"].(float64))
 
+	_, err := models.GetArticleById(int64(comment.ArticleId))
+	if err {
+		CoreResponse(w, http.StatusBadRequest, nil)
+	}
+
 	if !models.NewComment(comment) {
 		CoreResponse(w, http.StatusBadRequest, nil)
 	}

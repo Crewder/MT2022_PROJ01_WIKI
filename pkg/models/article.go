@@ -45,6 +45,15 @@ func GetArticleBySlug(slug string) (*Article, bool) {
 	return &article, true
 }
 
+func GetArticleById(Id int64) (*Article, bool) {
+	var article Article
+	db.Where("ID = ?", Id).Find(&article)
+	if article.Title == "" || article.Content == "" {
+		return nil, true
+	}
+	return &article, false
+}
+
 func NewArticle(a *Article) bool {
 	if a == nil {
 		log.Fatal(a)
