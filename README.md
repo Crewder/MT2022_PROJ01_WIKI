@@ -440,7 +440,6 @@ http://localhost:8080/comment/create
 #### Request Body
 ``` json
 {
-    "UserId": 1,
     "ArticleId": 2,
     "comment": "J'aime les pistaches"
 }
@@ -769,7 +768,7 @@ http://localhost:8080/user/{id}
     "ID": 1,
     "Name": "Florian",
     "Email": "florian.leroy@hetic.net",
-    "Password": "test"
+    "Password": "$2a$10$EepvHXgUhENteagc0FD4kuFzBAee8LYIt7JN6SVUb5PpJA.PiLEIC"
 }
 ```
 
@@ -793,7 +792,7 @@ http://localhost:8080/users
         "ID": 1,
         "Name": "Florian",
         "Email": "florian.leroy@hetic.net",
-        "Password": "test"
+        "Password": "$2a$10$EepvHXgUhENteagc0FD4kuFzBAee8LYIt7JN6SVUb5PpJA.PiLEIC"
     },
     {
         "CreatedAt": "0001-01-01T00:00:00Z",
@@ -802,7 +801,7 @@ http://localhost:8080/users
         "ID": 2,
         "Name": "",
         "Email": "test.test@test.net",
-        "Password": "blabla"
+        "Password": "$2a$10$EepvHXgUhENteagc0FD4kuFzBAee8LYIt7JN6SVUb5PpJA.PiLEIC"
     },
     {
         "CreatedAt": "2021-02-28T17:39:56.558+01:00",
