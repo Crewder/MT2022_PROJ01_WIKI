@@ -32,6 +32,7 @@ func GetArticles(w http.ResponseWriter, r *http.Request) {
 	articles, error := models.GetAllArticles()
 	if error {
 		CoreResponse(w, http.StatusBadRequest, nil)
+
 	}
 	CoreResponse(w, http.StatusOK, articles)
 }

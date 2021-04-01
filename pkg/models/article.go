@@ -45,6 +45,15 @@ func GetArticleBySlug(slug string) (*Article, bool) {
 	return &article, true
 }
 
+func GetArticleById(Id int64) (*Article, bool) {
+	var article Article
+	db.Where("ID = ?", Id).Find(&article)
+	if article.Title == "" || article.Content == "" {
+		return nil, true
+	}
+	return &article, false
+}
+
 func NewArticle(a *Article) bool {
 	if a == nil || a.Title == nil {
 		return false
@@ -77,6 +86,9 @@ func SlugUnique(title string) string {
 	for !slugValid {
 		article, result := GetArticleBySlug(slug)
 		if article.Slug != "" && result == true {
+			slug = strings.ToLower(tools.SanitizerSlug(title)) + "-" + strconv.Itoa(indexSlug)
+			indexSlug++
+		} else if article.Slug == slug {
 			slug = strings.ToLower(tools.SanitizerSlug(title)) + "-" + strconv.Itoa(indexSlug)
 			indexSlug++
 		} else {
