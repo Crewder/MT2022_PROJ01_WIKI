@@ -46,46 +46,63 @@ Documentation annexe : [JWT](/doc/JWT-explain.md)
 
 <a name="launch"/>
 
+## Setup du .env
+1. Creér une fichier .env a la racine du projet
+2. Copier-Coller le  contenu du.env.exemple dans ce fichier
+3. Remplacer les variables en fonctions de vos Environnement
+    - La CSRFKey sera utilisé dans les headers des requetes aillant besoin d'une authentification
+  
+
 ## Lancement de l'application 
 ```
 go run main.go
 ```
 
+
+
 <a name="request"/>
 
 # Requêtes
 
-| Méthodes | Endpoint | Action  |
-|---|---|---|
-| POST | article/create | Création d'un article |
-| PUT | article/{slug} | Mise à jour d'un article |
-| GET | article/{slug} | Récupération d'un article |
-|GET | articles | Récupération des articles |
-|DELETE | article/{slug} | Suppression d'un article |
+***Pour toute les requête nécessitant une authentification il sera necessaire d'integrer a la requete un Header***
+
+```js
+X-CSRF-Token : <csrfkey> 
+```
 
 
-| Méthodes | Endpoint | Action |
-|---|---|---|
-|POST| comment/create | Création d'un commentaire |
-|GET| comment/{articleId} | Récupération des commentaires d'un article|
-| PUT | comment/{id} | Mise à jour d'un commentaire |
-|DELETE| comment/{id} | Suppression d'un commentaire|
+| Méthodes | Endpoint | Action  | Authentification|
+|---|---|---|---|
+| POST | article/create | Création d'un article |Member|
+| PUT | article/{slug} | Mise à jour d'un article | Member|
+| GET | article/{slug} | Récupération d'un article ||
+|GET | articles | Récupération des articles ||
+|DELETE | article/{slug} | Suppression d'un article |Member|
 
-| Méthodes | Endpoint | Action |
-|---|---|---|
-|POST| user/create | Création d'un utilisateur |
-|GET| user/{id} | Récupération d'un utilisateur |
-|GET| users | Récupération des utilisateurs |
-|POST| user/login | Connexion utilisateur |
-|POST| user/logout | Déconnexion utilisateur |
+
+| Méthodes | Endpoint | Action | Authentification |
+|---|---|---|---|
+|POST| comment/create | Création d'un commentaire |Member|
+|GET| comment/{articleId} | Récupération des commentaires d'un article|Member|
+| PUT | comment/{id} | Mise à jour d'un commentaire |Member|
+|DELETE| comment/{id} | Suppression d'un commentaire|Member|
+
+| Méthodes | Endpoint | Action | Authentification |
+|---|---|---|---|
+|POST| user/create | Création d'un utilisateur ||
+|GET| user/{id} | Récupération d'un utilisateur |Admin|
+|GET| users | Récupération des utilisateurs |Admin|
+|POST| user/login | Connexion utilisateur ||
+|POST| user/logout | Déconnexion utilisateur |Member|
 
 <a name="article"/>
+
 
 # Article
 
 <a name="createarticle"/>
 
-## Création d'un article
+## Création d'un article 
 
 **POST** - Création d'un article
 
