@@ -2,9 +2,10 @@ package jwt
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/gowiki-api/pkg/handler"
 	"github.com/gowiki-api/pkg/models"
-	"net/http"
 )
 
 type Credentials struct {
@@ -30,7 +31,7 @@ func AuthUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authTokenString, csrfSecret, err := CreateNewTokens(Users.Role)
+	authTokenString, csrfSecret, err := CreateNewTokens(Users)
 
 	SetCookies(w, authTokenString)
 	if err != nil {

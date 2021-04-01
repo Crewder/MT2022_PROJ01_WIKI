@@ -4,31 +4,45 @@ import (
 	"encoding/json"
 	"github.com/go-chi/chi"
 	"github.com/gowiki-api/pkg/models"
+	"github.com/gowiki-api/pkg/tools"
 	"io/ioutil"
 	"log"
 	"net/http"
 )
 
 func CreateArticle(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Fatal(err)
+
+	article := &models.Article{}
+	_ = json.NewDecoder(r.Body).Decode(article)
+
+	claims, error := tools.ExtractDataToken(w, r)
+	if error {
+		CoreResponse(w, http.StatusBadRequest, nil)
 	}
-	var article models.Article
-	err = json.Unmarshal(body, &article)
-	models.NewArticle(&article)
+
+	Uintdata := claims["Uintdata"].(map[string]interface{})
+	article.UserId = uint(Uintdata["Id"].(float64))
+	if !models.NewArticle(article) {
+		CoreResponse(w, http.StatusBadRequest, nil)
+	}
 	CoreResponse(w, http.StatusCreated, nil)
 }
 
 func GetArticles(w http.ResponseWriter, r *http.Request) {
-	articles := models.GetAllArticles()
+	articles, error := models.GetAllArticles()
+	if error {
+		CoreResponse(w, http.StatusBadRequest, nil)
+
+	}
 	CoreResponse(w, http.StatusOK, articles)
 }
 
 func GetArticle(w http.ResponseWriter, r *http.Request) {
 	slug := chi.URLParam(r, "slug")
-	articleDetails := models.GetArticleBySlug(slug)
-
+	articleDetails, error := models.GetArticleBySlug(slug)
+	if error {
+		CoreResponse(w, http.StatusBadRequest, nil)
+	}
 	CoreResponse(w, http.StatusOK, articleDetails)
 }
 
@@ -37,18 +51,28 @@ func UpdateArticle(w http.ResponseWriter, r *http.Request) {
 
 	slug := chi.URLParam(r, "slug")
 
-	article := models.GetArticleBySlug(slug)
-
+	article, error := models.GetArticleBySlug(slug)
+	if error {
+		CoreResponse(w, http.StatusBadRequest, nil)
+	}
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	err = json.Unmarshal(body, &article)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	models.UpdateArticle(article)
+	if !models.UpdateArticle(article) {
+		CoreResponse(w, http.StatusBadRequest, nil)
+	}
 
-	newArticle := models.GetArticleBySlug(slug)
+	newArticle, error := models.GetArticleBySlug(slug)
+	if error {
+		CoreResponse(w, http.StatusBadRequest, nil)
+	}
 
 	CoreResponse(w, http.StatusOK, newArticle)
 }
@@ -56,7 +80,10 @@ func UpdateArticle(w http.ResponseWriter, r *http.Request) {
 func DeleteArticle(w http.ResponseWriter, r *http.Request) {
 	slug := chi.URLParam(r, "slug")
 
-	article := models.GetArticleBySlug(slug)
+	article, error := models.GetArticleBySlug(slug)
+	if error {
+		CoreResponse(w, http.StatusBadRequest, nil)
+	}
 	models.DeleteArticle(article)
 
 	CoreResponse(w, http.StatusNoContent, article)
