@@ -2,13 +2,12 @@ package handler
 
 import (
 	"encoding/json"
-	"io/ioutil"
-	"log"
-	"net/http"
-
 	"github.com/go-chi/chi"
 	"github.com/gowiki-api/pkg/models"
 	"github.com/gowiki-api/pkg/tools"
+	"io/ioutil"
+	"log"
+	"net/http"
 )
 
 func CreateArticle(w http.ResponseWriter, r *http.Request) {

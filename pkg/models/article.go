@@ -1,7 +1,6 @@
 package models
 
 import (
-	"log"
 	"strconv"
 	"strings"
 
@@ -11,11 +10,11 @@ import (
 
 type Article struct {
 	gorm.Model
-	UserId  uint   `json:"UserId" gorm:"not null"`
-	User    User   `gorm:"foreignKey:UserId"`
-	Title   string `json:"Title" gorm:"not null"`
-	Content string `json:"Content" gorm:"not null"`
-	Slug    string `json:"Slug" gorm:"not null"`
+	UserId  uint    `json:"UserId" gorm:"not null"`
+	User    User    `gorm:"foreignKey:UserId"`
+	Title   *string `json:"Title" gorm:"not null"`
+	Content *string `json:"Content" gorm:"not null"`
+	Slug    string  `json:"Slug" gorm:"not null"`
 }
 
 type Articles []Article
@@ -42,15 +41,15 @@ func GetArticleBySlug(slug string) (*Article, bool) {
 	if result.Error == nil {
 		return &article, false
 	}
+
 	return &article, true
 }
 
 func NewArticle(a *Article) bool {
-	if a == nil {
-		log.Fatal(a)
+	if a == nil || a.Title == nil {
 		return false
 	}
-	a.Slug = SlugUnique(strings.ToLower(tools.SanitizerSlug(a.Title)))
+	a.Slug = SlugUnique(strings.ToLower(tools.SanitizerSlug(*a.Title)))
 	result := db.Create(&a)
 	if result.Error != nil {
 		return false
@@ -60,10 +59,9 @@ func NewArticle(a *Article) bool {
 
 func UpdateArticle(a *Article) bool {
 	if a == nil {
-		log.Fatal(a)
 		return false
 	}
-	a.Slug = SlugUnique(strings.ToLower(tools.SanitizerSlug(a.Title)))
+	a.Slug = SlugUnique(strings.ToLower(tools.SanitizerSlug(*a.Title)))
 	result := db.Save(&a)
 	if result.Error != nil {
 		return false
