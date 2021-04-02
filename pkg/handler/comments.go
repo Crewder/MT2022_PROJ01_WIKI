@@ -37,8 +37,9 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 func GetCommentsByArticle(w http.ResponseWriter, r *http.Request) {
 	articleId := chi.URLParam(r, "id")
 	comments, result := models.GetAllCommentsByArticle(articleId)
-	if result {
+	if result || len(comments) == 0 {
 		CoreResponse(w, http.StatusBadRequest, nil)
+		return
 	}
 	CoreResponse(w, http.StatusOK, comments)
 }
