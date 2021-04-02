@@ -52,7 +52,7 @@ func GetArticleById(Id int64) (*Article, bool) {
 }
 
 func NewArticle(a *Article) bool {
-	if a == nil || a.Title == nil {
+	if a == nil || *a.Title == "" || *a.Content == "" {
 		return false
 	}
 	a.Slug = SlugUnique(strings.ToLower(tools.SanitizerSlug(*a.Title)))
