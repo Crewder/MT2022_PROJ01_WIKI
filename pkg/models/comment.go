@@ -23,6 +23,7 @@ func NewComment(comment *Comment) bool {
 	if comment == nil || *comment.Comment == "" {
 		return false
 	}
+
 	result := db.Create(&comment)
 	if result.Error != nil {
 		return false
@@ -42,6 +43,7 @@ func GetAllCommentsByArticle(articleId string) ([]Comment, bool) {
 func GetComment(id string) (*Comment, bool) {
 	var comment Comment
 	result := db.Where("id = ?", id).Find(&comment)
+
 	if result.Error == nil {
 		return &comment, false
 	}
