@@ -46,14 +46,14 @@ Documentation annexe : [JWT](/doc/JWT-explain.md)
 
 <a name="launch"/>
 
-## Setup du .env
+**Setup du .env**
 1. Creér une fichier .env a la racine du projet
 2. Copier-Coller le contenu du.env.exemple dans ce fichier
 3. Remplacer les variables en fonction de votre Environnement
     - La CSRFKey sera utilisé dans les headers des requêtes aillant besoin d'une authentification
   
 
-## Lancement de l'application 
+## Lancement du projet 
 ```
 go run main.go
 ```
