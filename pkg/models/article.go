@@ -38,6 +38,9 @@ func GetArticleBySlug(slug string) (*Article, bool) {
 		return &article, false
 	}
 	result := db.Where("slug = ?", slug).Find(&article)
+	if article.Title == nil || article.Content == nil{
+		return &article, true
+	}
 	if result.Error == nil {
 		return &article, false
 	}
