@@ -62,6 +62,9 @@ func NewArticle(a *Article) bool {
 	if a == nil || *a.Title == "" || *a.Content == "" {
 		return false
 	}
+	if a.Title == nil{
+		return false
+	}
 	a.Slug = SlugUnique(strings.ToLower(tools.SanitizerSlug(*a.Title)))
 	result := db.Create(&a)
 	if result.Error != nil {
