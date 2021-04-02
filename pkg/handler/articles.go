@@ -18,12 +18,14 @@ func CreateArticle(w http.ResponseWriter, r *http.Request) {
 	claims, error := tools.ExtractDataToken(w, r)
 	if error {
 		CoreResponse(w, http.StatusBadRequest, nil)
+		return
 	}
 
 	Uintdata := claims["Uintdata"].(map[string]interface{})
 	article.UserId = uint(Uintdata["Id"].(float64))
 	if !models.NewArticle(article) {
 		CoreResponse(w, http.StatusBadRequest, nil)
+		return
 	}
 	CoreResponse(w, http.StatusCreated, nil)
 }
@@ -32,7 +34,7 @@ func GetArticles(w http.ResponseWriter, r *http.Request) {
 	articles, error := models.GetAllArticles()
 	if error {
 		CoreResponse(w, http.StatusBadRequest, nil)
-
+		return
 	}
 	CoreResponse(w, http.StatusOK, articles)
 }
@@ -42,6 +44,7 @@ func GetArticle(w http.ResponseWriter, r *http.Request) {
 	articleDetails, error := models.GetArticleBySlug(slug)
 	if error {
 		CoreResponse(w, http.StatusBadRequest, nil)
+		return
 	}
 	CoreResponse(w, http.StatusOK, articleDetails)
 }
@@ -54,6 +57,7 @@ func UpdateArticle(w http.ResponseWriter, r *http.Request) {
 	article, error := models.GetArticleBySlug(slug)
 	if error {
 		CoreResponse(w, http.StatusBadRequest, nil)
+		return
 	}
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -67,14 +71,10 @@ func UpdateArticle(w http.ResponseWriter, r *http.Request) {
 
 	if !models.UpdateArticle(article) {
 		CoreResponse(w, http.StatusBadRequest, nil)
+		return
 	}
 
-	newArticle, error := models.GetArticleBySlug(slug)
-	if error {
-		CoreResponse(w, http.StatusBadRequest, nil)
-	}
-
-	CoreResponse(w, http.StatusOK, newArticle)
+	CoreResponse(w, http.StatusNoContent, nil)
 }
 
 func DeleteArticle(w http.ResponseWriter, r *http.Request) {
@@ -86,5 +86,5 @@ func DeleteArticle(w http.ResponseWriter, r *http.Request) {
 	}
 	models.DeleteArticle(article)
 
-	CoreResponse(w, http.StatusNoContent, article)
+	CoreResponse(w, http.StatusNoContent, nil)
 }
