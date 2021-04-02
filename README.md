@@ -48,9 +48,9 @@ Documentation annexe : [JWT](/doc/JWT-explain.md)
 
 ## Setup du .env
 1. Creér une fichier .env a la racine du projet
-2. Copier-Coller le  contenu du.env.exemple dans ce fichier
-3. Remplacer les variables en fonctions de vos Environnement
-    - La CSRFKey sera utilisé dans les headers des requetes aillant besoin d'une authentification
+2. Copier-Coller le contenu du.env.exemple dans ce fichier
+3. Remplacer les variables en fonction de votre Environnement
+    - La CSRFKey sera utilisé dans les headers des requêtes aillant besoin d'une authentification
   
 
 ## Lancement de l'application 
@@ -64,7 +64,7 @@ go run main.go
 
 # Requêtes
 
-***Pour toute les requête nécessitant une authentification il sera necessaire d'integrer a la requete un Header***
+***Pour toutes les requêtes nécessitant une authentification il sera necessaire d'intégrer a la requête un Header***
 
 ```js
 X-CSRF-Token : <csrfkey> 
