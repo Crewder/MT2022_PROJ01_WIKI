@@ -51,7 +51,11 @@ func GetArticleBySlug(slug string) (*Article, bool) {
 func GetArticleById(Id int64) (*Article, bool) {
 	var article Article
 	db.Where("ID = ?", Id).Find(&article)
-	return &article, false
+
+	if article.Model.ID == 0 {
+		return &article, false
+	}
+	return &article, true
 }
 
 func NewArticle(a *Article) bool {
@@ -95,7 +99,6 @@ func SlugUnique(title string) string {
 			slugValid = true
 		}
 	}
-
 	return slug
 }
 

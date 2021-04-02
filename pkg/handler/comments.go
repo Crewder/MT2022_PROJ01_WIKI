@@ -24,12 +24,15 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 	comment.UserId = uint(Uintdata["Id"].(float64))
 
 	_, err := models.GetArticleById(int64(*comment.ArticleId))
-	if err {
+
+	if !err {
 		CoreResponse(w, http.StatusBadRequest, nil)
+		return
 	}
 
 	if !models.NewComment(comment) {
 		CoreResponse(w, http.StatusBadRequest, nil)
+		return
 	}
 	CoreResponse(w, http.StatusCreated, nil)
 }
@@ -51,6 +54,7 @@ func UpdateComment(w http.ResponseWriter, r *http.Request) {
 	comment, result := models.GetComment(id)
 	if result {
 		CoreResponse(w, http.StatusBadRequest, nil)
+		return
 	}
 
 	body, err := ioutil.ReadAll(r.Body)
@@ -61,6 +65,7 @@ func UpdateComment(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(body, &comment)
 	if !models.UpdateComment(comment) {
 		CoreResponse(w, http.StatusBadRequest, nil)
+		return
 	}
 
 	CoreResponse(w, http.StatusNoContent, nil)
@@ -72,9 +77,11 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 	comment, result := models.GetComment(id)
 	if result {
 		CoreResponse(w, http.StatusBadRequest, nil)
+		return
 	}
 	if !models.DeleteComment(comment) {
 		CoreResponse(w, http.StatusBadRequest, nil)
+		return
 	}
 	CoreResponse(w, http.StatusNoContent, nil)
 }
