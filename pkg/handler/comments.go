@@ -61,11 +61,8 @@ func UpdateComment(w http.ResponseWriter, r *http.Request) {
 	if !models.UpdateComment(comment) {
 		CoreResponse(w, http.StatusBadRequest, nil)
 	}
-	newComment, result := models.GetComment(id)
-	if result {
-		CoreResponse(w, http.StatusBadRequest, nil)
-	}
-	CoreResponse(w, http.StatusOK, newComment)
+
+	CoreResponse(w, http.StatusNoContent, nil)
 }
 
 func DeleteComment(w http.ResponseWriter, r *http.Request) {
@@ -78,5 +75,5 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 	if !models.DeleteComment(comment) {
 		CoreResponse(w, http.StatusBadRequest, nil)
 	}
-	CoreResponse(w, http.StatusNoContent, comment)
+	CoreResponse(w, http.StatusNoContent, nil)
 }

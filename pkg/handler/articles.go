@@ -69,12 +69,7 @@ func UpdateArticle(w http.ResponseWriter, r *http.Request) {
 		CoreResponse(w, http.StatusBadRequest, nil)
 	}
 
-	newArticle, error := models.GetArticleBySlug(slug)
-	if error {
-		CoreResponse(w, http.StatusBadRequest, nil)
-	}
-
-	CoreResponse(w, http.StatusOK, newArticle)
+	CoreResponse(w, http.StatusNoContent, nil)
 }
 
 func DeleteArticle(w http.ResponseWriter, r *http.Request) {
@@ -86,5 +81,5 @@ func DeleteArticle(w http.ResponseWriter, r *http.Request) {
 	}
 	models.DeleteArticle(article)
 
-	CoreResponse(w, http.StatusNoContent, article)
+	CoreResponse(w, http.StatusNoContent, nil)
 }
