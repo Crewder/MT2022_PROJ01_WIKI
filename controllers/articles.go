@@ -3,8 +3,9 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/go-chi/chi"
-	"github.com/gowiki-api/wiki/models"
-	"github.com/gowiki-api/wiki/tools"
+	"github.com/gowiki-api/helpers"
+	"github.com/gowiki-api/models"
+	"github.com/gowiki-api/tools"
 	"io/ioutil"
 	"net/http"
 )

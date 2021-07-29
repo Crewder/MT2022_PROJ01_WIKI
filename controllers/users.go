@@ -3,7 +3,8 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/go-chi/chi"
-	"github.com/gowiki-api/wiki/models"
+	"github.com/gowiki-api/helpers"
+	"github.com/gowiki-api/models"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"strconv"

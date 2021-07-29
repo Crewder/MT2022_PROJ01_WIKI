@@ -15,6 +15,7 @@ import (
 	"strings"
 )
 
+// AuthentificationMiddleware
 // Verify JWT Token validity and the CSRF Inside the JWt Token
 // will return 401 if CSRF OR JWT is no valid
 // Then Verify the Policy
@@ -118,6 +119,7 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+// CORSMiddleware
 // Configure the CORS with default value
 // Will Allow request from all Source
 // return and serve a  context with the CorsOptionHandler
@@ -134,6 +136,7 @@ func CORSMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+// GetCsrfFromReq
 // verify the  CSRF token on header of the request
 func GetCsrfFromReq(r *http.Request) string {
 	csrfFromForm := r.FormValue("X-CSRF-Token")

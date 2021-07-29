@@ -1,11 +1,10 @@
-package rest
+package main
 
 import (
 	"github.com/go-chi/chi"
-	"github.com/gowiki-api/wiki/auth/jwt"
-	"github.com/gowiki-api/wiki/controllers"
-	"github.com/gowiki-api/wiki/http/middleware"
-	_ "github.com/gowiki-api/wiki/http/middleware"
+	"github.com/gowiki-api/auth/jwt"
+	"github.com/gowiki-api/controllers"
+	"github.com/gowiki-api/middleware"
 	"net/http"
 )
 
