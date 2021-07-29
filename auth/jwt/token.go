@@ -3,10 +3,9 @@ package jwt
 import (
 	"net/http"
 	"time"
-
 	"github.com/dgrijalva/jwt-go"
-	"github.com/gowiki-api/pkg/models"
-	"github.com/gowiki-api/pkg/storage"
+	"github.com/gowiki-api/wiki/models"
+	"github.com/gowiki-api/wiki/storage"
 	_ "github.com/joho/godotenv"
 )
 

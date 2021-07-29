@@ -1,9 +1,9 @@
-package handler
+package controllers
 
 import (
 	"encoding/json"
 	"github.com/go-chi/chi"
-	"github.com/gowiki-api/pkg/models"
+	"github.com/gowiki-api/wiki/models"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"strconv"

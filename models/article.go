@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gowiki-api/pkg/tools"
+	"github.com/gowiki-api/wiki/tools"
 	"gorm.io/gorm"
 )
 

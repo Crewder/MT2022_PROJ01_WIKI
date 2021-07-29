@@ -7,9 +7,9 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
-	jwt2 "github.com/gowiki-api/pkg/auth/jwt"
-	"github.com/gowiki-api/pkg/handler"
-	"github.com/gowiki-api/pkg/models"
+	jwt2 "github.com/gowiki-api/wiki/auth/jwt"
+	"github.com/gowiki-api/wiki/controllers"
+	"github.com/gowiki-api/wiki/models"
 	"log"
 	"net/http"
 	"strings"
@@ -26,10 +26,10 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 		AuthCookie, authErr := r.Cookie("AuthToken")
 		if authErr != nil {
 			if authErr == http.ErrNoCookie {
-				handler.CoreResponse(w, http.StatusUnauthorized, nil)
+				controllers.CoreResponse(w, http.StatusUnauthorized, nil)
 				return
 			}
-			handler.CoreResponse(w, http.StatusBadRequest, nil)
+			controllers.CoreResponse(w, http.StatusBadRequest, nil)
 			return
 		} else {
 			// Parse The token value and return the JWT key if everything is valid
@@ -51,7 +51,7 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 			expectedCSRF := Stringdata["CSRF"].(string)
 
 			if actualCSRF != fmt.Sprintf(expectedCSRF) {
-				handler.CoreResponse(w, http.StatusUnauthorized, nil)
+				controllers.CoreResponse(w, http.StatusUnauthorized, nil)
 			} else {
 				//Jwt Validity verification
 				if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
@@ -74,12 +74,12 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 								Article, err := models.GetArticleBySlug(slug)
 
 								if err {
-									handler.CoreResponse(w, http.StatusBadRequest, nil)
+									controllers.CoreResponse(w, http.StatusBadRequest, nil)
 									return
 								}
 
 								if Article.UserId != (uint(userid)) {
-									handler.CoreResponse(w, http.StatusForbidden, nil)
+									controllers.CoreResponse(w, http.StatusForbidden, nil)
 									return
 								}
 							}
@@ -88,12 +88,12 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 								Comment, err := models.GetComment(id)
 
 								if err {
-									handler.CoreResponse(w, http.StatusBadRequest, nil)
+									controllers.CoreResponse(w, http.StatusBadRequest, nil)
 									return
 								}
 
 								if Comment.UserId != (uint(userid)) {
-									handler.CoreResponse(w, http.StatusForbidden, nil)
+									controllers.CoreResponse(w, http.StatusForbidden, nil)
 									return
 								}
 							}
@@ -102,15 +102,15 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 
 					//Create an enforcer with path for the policy in csv file and the model
 					// We will verify with this enforcer if the action is allowed for this role
-					e := casbin.NewEnforcer("pkg/auth/roles/auth_model.conf", "pkg/auth/roles/auth_policy.csv")
+					e := casbin.NewEnforcer("wiki/auth/roles/auth_model.conf", "wiki/auth/roles/auth_policy.csv")
 
 					if e.Enforce(role, path, method) {
 						next.ServeHTTP(w, r.WithContext(ctx))
 					} else {
-						handler.CoreResponse(w, http.StatusForbidden, nil)
+						controllers.CoreResponse(w, http.StatusForbidden, nil)
 					}
 				} else {
-					handler.CoreResponse(w, http.StatusUnauthorized, nil)
+					controllers.CoreResponse(w, http.StatusUnauthorized, nil)
 					log.Fatal(err)
 				}
 			}
