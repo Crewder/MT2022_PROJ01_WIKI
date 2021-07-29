@@ -1,11 +1,10 @@
 package models
 
 import (
+	"github.com/gowiki-api/tools"
+	"gorm.io/gorm"
 	"strconv"
 	"strings"
-
-	"github.com/gowiki-api/wiki/tools"
-	"gorm.io/gorm"
 )
 
 type Article struct {
@@ -38,7 +37,7 @@ func GetArticleBySlug(slug string) (*Article, bool) {
 		return &article, false
 	}
 	result := db.Where("slug = ?", slug).Find(&article)
-	if article.Title == nil || article.Content == nil{
+	if article.Title == nil || article.Content == nil {
 		return &article, true
 	}
 	if result.Error == nil {
@@ -62,7 +61,7 @@ func NewArticle(a *Article) bool {
 	if a == nil || *a.Title == "" || *a.Content == "" {
 		return false
 	}
-	if a.Title == nil{
+	if a.Title == nil {
 		return false
 	}
 	a.Slug = SlugUnique(strings.ToLower(tools.SanitizerSlug(*a.Title)))

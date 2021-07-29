@@ -35,7 +35,7 @@ func GetAllUsers() ([]User, bool) {
 	var Users []User
 	result := db.Find(&Users)
 
-	if result.Error == nil {
+	if result.Error != nil {
 		return Users, false
 	}
 	return Users, true

@@ -22,7 +22,6 @@ func Router() http.Handler {
 	// -------- Private Route  --------//
 	// -------- Config
 	PrivateRouter := router.Group(nil)
-
 	PrivateRouter.Use(middleware.AuthentificationMiddleware)
 
 	// -------- Private Route

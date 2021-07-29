@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 	"github.com/casbin/casbin"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
-	jwt2 "github.com/gowiki-api/wiki/auth/jwt"
-	"github.com/gowiki-api/wiki/controllers"
-	"github.com/gowiki-api/wiki/models"
+	"github.com/golang-jwt/jwt"
+	jwt2 "github.com/gowiki-api/auth/jwt"
+	"github.com/gowiki-api/controllers"
+	"github.com/gowiki-api/models"
 	"log"
 	"net/http"
 	"strings"
@@ -18,7 +18,7 @@ import (
 // Verify JWT Token validity and the CSRF Inside the JWt Token
 // will return 401 if CSRF OR JWT is no valid
 // Then Verify the Policy
-// will return 403 if Policy
+// will return 403 if Policy isnt respected
 func AuthentificationMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
@@ -38,7 +38,7 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 					return nil, authErr
 				}
-				return jwt2.JwtKey, nil
+				return jwt2.Key, nil
 			})
 
 			//Fetch the data inside the token

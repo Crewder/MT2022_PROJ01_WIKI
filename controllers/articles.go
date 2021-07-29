@@ -6,7 +6,6 @@ import (
 	"github.com/gowiki-api/wiki/models"
 	"github.com/gowiki-api/wiki/tools"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -23,10 +22,9 @@ func CreateArticle(w http.ResponseWriter, r *http.Request) {
 
 	Uintdata := claims["Uintdata"].(map[string]interface{})
 	article.UserId = uint(Uintdata["Id"].(float64))
-	if !models.NewArticle(article) {
-		CoreResponse(w, http.StatusBadRequest, nil)
-		return
-	}
+
+	helpers.HandleError(http.StatusBadRequest, nil, !models.NewArticle(article))
+
 	CoreResponse(w, http.StatusCreated, nil)
 }
 
@@ -51,7 +49,6 @@ func GetArticle(w http.ResponseWriter, r *http.Request) {
 
 func UpdateArticle(w http.ResponseWriter, r *http.Request) {
 	var err error
-
 	slug := chi.URLParam(r, "slug")
 
 	article, error := models.GetArticleBySlug(slug)
@@ -60,19 +57,11 @@ func UpdateArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
+	helpers.HandleError(http.StatusBadRequest, err, false)
 
 	err = json.Unmarshal(body, &article)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if !models.UpdateArticle(article) {
-		CoreResponse(w, http.StatusBadRequest, nil)
-		return
-	}
+	helpers.HandleError(http.StatusBadRequest, err, false)
+	helpers.HandleError(http.StatusBadRequest, nil, !models.UpdateArticle(article))
 
 	CoreResponse(w, http.StatusNoContent, nil)
 }

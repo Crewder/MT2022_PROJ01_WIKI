@@ -1,16 +1,17 @@
 package tools
 
 import (
-	"net/http"
-
-	"github.com/dgrijalva/jwt-go"
-	"github.com/gowiki-api/wiki/storage"
+	"github.com/golang-jwt/jwt"
+	"github.com/gowiki-api/storage"
 	_ "github.com/joho/godotenv"
+	"net/http"
 )
 
 var JwtKey = []byte(storage.GoDotEnvVariable("JWTKey"))
 
-func ExtractDataToken(w http.ResponseWriter, r *http.Request) (jwt.MapClaims, bool) {
+// ExtractDataToken
+// Function that return the data inside the jwt cookie
+func ExtractDataToken(r *http.Request) (jwt.MapClaims, bool) {
 
 	AuthCookie, authErr := r.Cookie("AuthToken")
 	jwtToken := AuthCookie.Value
