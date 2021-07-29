@@ -15,11 +15,8 @@ func CreateArticle(w http.ResponseWriter, r *http.Request) {
 	article := &models.Article{}
 	_ = json.NewDecoder(r.Body).Decode(article)
 
-	claims, error := tools.ExtractDataToken(w, r)
-	if error {
-		CoreResponse(w, http.StatusBadRequest, nil)
-		return
-	}
+	claims, err := tools.ExtractDataToken(r)
+	helpers.HandleError(http.StatusBadRequest, nil, err)
 
 	Uintdata := claims["Uintdata"].(map[string]interface{})
 	article.UserId = uint(Uintdata["Id"].(float64))
@@ -30,21 +27,17 @@ func CreateArticle(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetArticles(w http.ResponseWriter, r *http.Request) {
-	articles, error := models.GetAllArticles()
-	if error {
-		CoreResponse(w, http.StatusBadRequest, nil)
-		return
-	}
+	articles, err := models.GetAllArticles()
+	helpers.HandleError(http.StatusBadRequest, nil, err)
 	CoreResponse(w, http.StatusOK, articles)
 }
 
 func GetArticle(w http.ResponseWriter, r *http.Request) {
 	slug := chi.URLParam(r, "slug")
-	articleDetails, error := models.GetArticleBySlug(slug)
-	if error {
-		CoreResponse(w, http.StatusBadRequest, nil)
-		return
-	}
+	articleDetails, err := models.GetArticleBySlug(slug)
+
+	helpers.HandleError(http.StatusBadRequest, nil, err)
+
 	CoreResponse(w, http.StatusOK, articleDetails)
 }
 
@@ -52,11 +45,9 @@ func UpdateArticle(w http.ResponseWriter, r *http.Request) {
 	var err error
 	slug := chi.URLParam(r, "slug")
 
-	article, error := models.GetArticleBySlug(slug)
-	if error {
-		CoreResponse(w, http.StatusBadRequest, nil)
-		return
-	}
+	article, articleErr := models.GetArticleBySlug(slug)
+	helpers.HandleError(http.StatusBadRequest, nil, articleErr)
+
 	body, err := ioutil.ReadAll(r.Body)
 	helpers.HandleError(http.StatusBadRequest, err, false)
 
@@ -70,10 +61,10 @@ func UpdateArticle(w http.ResponseWriter, r *http.Request) {
 func DeleteArticle(w http.ResponseWriter, r *http.Request) {
 	slug := chi.URLParam(r, "slug")
 
-	article, error := models.GetArticleBySlug(slug)
-	if error {
-		CoreResponse(w, http.StatusBadRequest, nil)
-	}
+	article, err := models.GetArticleBySlug(slug)
+
+	helpers.HandleError(http.StatusBadRequest, nil, err)
+
 	models.DeleteArticle(article)
 
 	CoreResponse(w, http.StatusNoContent, nil)
