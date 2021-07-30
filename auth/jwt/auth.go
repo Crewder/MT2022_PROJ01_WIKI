@@ -3,6 +3,7 @@ package jwt
 import (
 	"encoding/json"
 	"github.com/gowiki-api/controllers"
+	"github.com/gowiki-api/helpers"
 	"github.com/gowiki-api/models"
 	"net/http"
 )
@@ -16,12 +17,10 @@ func AuthUsers(w http.ResponseWriter, r *http.Request) {
 	var creds Credentials
 
 	err := json.NewDecoder(r.Body).Decode(&creds)
-	Users := models.GetUserByEmail(creds.Email)
+	helpers.HandleError(http.StatusBadRequest, err)
 
-	if err != nil {
-		controllers.CoreResponse(w, http.StatusBadRequest, nil)
-		return
-	}
+	Users, err := models.GetUserByEmail(creds.Email)
+	helpers.HandleError(http.StatusBadRequest, err)
 
 	PasswordIsOk := models.PasswordIsValid(Users.Password, []byte(creds.Password))
 
@@ -33,10 +32,6 @@ func AuthUsers(w http.ResponseWriter, r *http.Request) {
 	authTokenString, csrfSecret, err := CreateNewTokens(Users)
 
 	SetCookies(w, authTokenString)
-	if err != nil {
-		controllers.CoreResponse(w, http.StatusInternalServerError, nil)
-		return
-	}
 
 	w.Header().Set("X-CSRF-Token", csrfSecret)
 	controllers.CoreResponse(w, http.StatusOK, nil)

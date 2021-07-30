@@ -9,6 +9,7 @@ import (
 	"github.com/golang-jwt/jwt"
 	jwt2 "github.com/gowiki-api/auth/jwt"
 	"github.com/gowiki-api/controllers"
+	"github.com/gowiki-api/helpers"
 	"github.com/gowiki-api/models"
 	"log"
 	"net/http"
@@ -74,10 +75,7 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 								slug := chi.URLParam(r, "slug")
 								Article, err := models.GetArticleBySlug(slug)
 
-								if err {
-									controllers.CoreResponse(w, http.StatusBadRequest, nil)
-									return
-								}
+								helpers.HandleError(http.StatusBadRequest, err)
 
 								if Article.UserId != (uint(userid)) {
 									controllers.CoreResponse(w, http.StatusForbidden, nil)
@@ -88,10 +86,7 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 								id := chi.URLParam(r, "id")
 								Comment, err := models.GetComment(id)
 
-								if err {
-									controllers.CoreResponse(w, http.StatusBadRequest, nil)
-									return
-								}
+								helpers.HandleError(http.StatusBadRequest, err)
 
 								if Comment.UserId != (uint(userid)) {
 									controllers.CoreResponse(w, http.StatusForbidden, nil)

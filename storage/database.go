@@ -32,7 +32,7 @@ func init() {
 		db, err = gorm.Open(mysql.Open(userDb+":"+passwordDb+"@tcp(127.0.0.1:"+portDb+")/"+nameDb+"?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{})
 	}
 
-	helpers.HandleError(500, err, false)
+	helpers.HandleError(500, err)
 }
 
 func GetDB() *gorm.DB {

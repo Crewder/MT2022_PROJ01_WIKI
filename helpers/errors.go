@@ -4,8 +4,8 @@ import (
 	"log"
 )
 
-func HandleError(status int, err error, bool bool) {
-	if err != nil || bool != false {
+func HandleError(status int, err error) {
+	if err != nil {
 		log.Fatal(status, err)
 	}
 }

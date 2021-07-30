@@ -16,25 +16,28 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewDecoder(r.Body).Decode(comment)
 
 	claims, err := tools.ExtractDataToken(r)
-	helpers.HandleError(http.StatusBadRequest, nil, err)
+	helpers.HandleError(http.StatusBadRequest, err)
 
 	Uintdata := claims["Uintdata"].(map[string]interface{})
 	comment.UserId = uint(Uintdata["Id"].(float64))
 
 	_, err = models.GetArticleById(int64(*comment.ArticleId))
+	helpers.HandleError(http.StatusBadRequest, err)
 
-	helpers.HandleError(http.StatusBadRequest, nil, !err)
-	helpers.HandleError(http.StatusBadRequest, nil, !models.NewComment(comment))
+	_, err = models.NewComment(comment)
+	helpers.HandleError(http.StatusBadRequest, err)
 
 	CoreResponse(w, http.StatusCreated, nil)
 }
 
 func GetCommentsByArticle(w http.ResponseWriter, r *http.Request) {
 	articleId := chi.URLParam(r, "id")
-	comments, result := models.GetAllCommentsByArticle(articleId)
+	comments, err := models.GetAllCommentsByArticle(articleId)
 
-	helpers.HandleError(http.StatusBadRequest, nil, result)
-	helpers.HandleError(http.StatusBadRequest, nil, len(comments) == 0)
+	if err != nil || len(comments) == 0 {
+		CoreResponse(w, http.StatusBadRequest, nil)
+		return
+	}
 
 	CoreResponse(w, http.StatusOK, comments)
 }
@@ -43,9 +46,9 @@ func UpdateComment(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	id := chi.URLParam(r, "id")
-	comment, result := models.GetComment(id)
+	comment, err := models.GetComment(id)
 
-	helpers.HandleError(http.StatusBadRequest, nil, result)
+	helpers.HandleError(http.StatusBadRequest, err)
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -54,7 +57,7 @@ func UpdateComment(w http.ResponseWriter, r *http.Request) {
 
 	err = json.Unmarshal(body, &comment)
 
-	helpers.HandleError(http.StatusBadRequest, err, false)
+	helpers.HandleError(http.StatusBadRequest, err)
 
 	CoreResponse(w, http.StatusNoContent, nil)
 }
@@ -62,10 +65,11 @@ func UpdateComment(w http.ResponseWriter, r *http.Request) {
 func DeleteComment(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
-	comment, result := models.GetComment(id)
+	comment, err := models.GetComment(id)
+	helpers.HandleError(http.StatusBadRequest, err)
 
-	helpers.HandleError(http.StatusBadRequest, nil, result)
-	helpers.HandleError(http.StatusBadRequest, nil, !models.DeleteComment(comment))
+	_, err = models.DeleteComment(comment)
+	helpers.HandleError(http.StatusBadRequest, err)
 
 	CoreResponse(w, http.StatusNoContent, nil)
 }
