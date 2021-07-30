@@ -4,21 +4,23 @@ import (
 	"context"
 	"fmt"
 	"github.com/casbin/casbin"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
-	jwt2 "github.com/gowiki-api/pkg/auth/jwt"
-	"github.com/gowiki-api/pkg/handler"
-	"github.com/gowiki-api/pkg/models"
+	"github.com/golang-jwt/jwt"
+	jwt2 "github.com/gowiki-api/auth/jwt"
+	"github.com/gowiki-api/controllers"
+	"github.com/gowiki-api/helpers"
+	"github.com/gowiki-api/models"
 	"log"
 	"net/http"
 	"strings"
 )
 
+// AuthentificationMiddleware
 // Verify JWT Token validity and the CSRF Inside the JWt Token
 // will return 401 if CSRF OR JWT is no valid
 // Then Verify the Policy
-// will return 403 if Policy
+// will return 403 if Policy isnt respected
 func AuthentificationMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
@@ -26,10 +28,10 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 		AuthCookie, authErr := r.Cookie("AuthToken")
 		if authErr != nil {
 			if authErr == http.ErrNoCookie {
-				handler.CoreResponse(w, http.StatusUnauthorized, nil)
+				controllers.CoreResponse(w, http.StatusUnauthorized, nil)
 				return
 			}
-			handler.CoreResponse(w, http.StatusBadRequest, nil)
+			controllers.CoreResponse(w, http.StatusBadRequest, nil)
 			return
 		} else {
 			// Parse The token value and return the JWT key if everything is valid
@@ -38,7 +40,7 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 					return nil, authErr
 				}
-				return jwt2.JwtKey, nil
+				return jwt2.Key, nil
 			})
 
 			//Fetch the data inside the token
@@ -51,7 +53,7 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 			expectedCSRF := Stringdata["CSRF"].(string)
 
 			if actualCSRF != fmt.Sprintf(expectedCSRF) {
-				handler.CoreResponse(w, http.StatusUnauthorized, nil)
+				controllers.CoreResponse(w, http.StatusUnauthorized, nil)
 			} else {
 				//Jwt Validity verification
 				if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
@@ -73,13 +75,10 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 								slug := chi.URLParam(r, "slug")
 								Article, err := models.GetArticleBySlug(slug)
 
-								if err {
-									handler.CoreResponse(w, http.StatusBadRequest, nil)
-									return
-								}
+								helpers.HandleError(http.StatusBadRequest, err)
 
 								if Article.UserId != (uint(userid)) {
-									handler.CoreResponse(w, http.StatusForbidden, nil)
+									controllers.CoreResponse(w, http.StatusForbidden, nil)
 									return
 								}
 							}
@@ -87,13 +86,10 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 								id := chi.URLParam(r, "id")
 								Comment, err := models.GetComment(id)
 
-								if err {
-									handler.CoreResponse(w, http.StatusBadRequest, nil)
-									return
-								}
+								helpers.HandleError(http.StatusBadRequest, err)
 
 								if Comment.UserId != (uint(userid)) {
-									handler.CoreResponse(w, http.StatusForbidden, nil)
+									controllers.CoreResponse(w, http.StatusForbidden, nil)
 									return
 								}
 							}
@@ -102,15 +98,15 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 
 					//Create an enforcer with path for the policy in csv file and the model
 					// We will verify with this enforcer if the action is allowed for this role
-					e := casbin.NewEnforcer("pkg/auth/roles/auth_model.conf", "pkg/auth/roles/auth_policy.csv")
+					e := casbin.NewEnforcer("wiki/auth/roles/auth_model.conf", "wiki/auth/roles/auth_policy.csv")
 
 					if e.Enforce(role, path, method) {
 						next.ServeHTTP(w, r.WithContext(ctx))
 					} else {
-						handler.CoreResponse(w, http.StatusForbidden, nil)
+						controllers.CoreResponse(w, http.StatusForbidden, nil)
 					}
 				} else {
-					handler.CoreResponse(w, http.StatusUnauthorized, nil)
+					controllers.CoreResponse(w, http.StatusUnauthorized, nil)
 					log.Fatal(err)
 				}
 			}
@@ -118,6 +114,7 @@ func AuthentificationMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+// CORSMiddleware
 // Configure the CORS with default value
 // Will Allow request from all Source
 // return and serve a  context with the CorsOptionHandler
@@ -134,6 +131,7 @@ func CORSMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+// GetCsrfFromReq
 // verify the  CSRF token on header of the request
 func GetCsrfFromReq(r *http.Request) string {
 	csrfFromForm := r.FormValue("X-CSRF-Token")

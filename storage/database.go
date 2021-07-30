@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"github.com/gowiki-api/helpers"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -10,6 +11,8 @@ import (
 
 var db *gorm.DB
 
+// GoDotEnvVariable
+// Fetch variable from .env
 func GoDotEnvVariable(key string) string {
 	err := godotenv.Load(".env")
 
@@ -21,7 +24,6 @@ func GoDotEnvVariable(key string) string {
 
 func init() {
 	var err error
-
 	if db == nil {
 		var userDb = GoDotEnvVariable("USER_DB")
 		var passwordDb = GoDotEnvVariable("PASSWORD_DB")
@@ -30,9 +32,7 @@ func init() {
 		db, err = gorm.Open(mysql.Open(userDb+":"+passwordDb+"@tcp(127.0.0.1:"+portDb+")/"+nameDb+"?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{})
 	}
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	helpers.HandleError(500, err)
 }
 
 func GetDB() *gorm.DB {

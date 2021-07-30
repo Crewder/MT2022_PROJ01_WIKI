@@ -1,9 +1,10 @@
-package handler
+package controllers
 
 import (
 	"encoding/json"
 	"github.com/go-chi/chi"
-	"github.com/gowiki-api/pkg/models"
+	"github.com/gowiki-api/helpers"
+	"github.com/gowiki-api/models"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"strconv"
@@ -14,10 +15,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewDecoder(r.Body).Decode(user)
 
 	pass, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-	if err != nil {
-		CoreResponse(w, http.StatusInternalServerError, nil)
-		return
-	}
+	helpers.HandleError(http.StatusBadRequest, err)
 
 	if len(user.Password) <= 4 {
 		CoreResponse(w, http.StatusBadRequest, nil)
@@ -26,26 +24,16 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		user.Password = string(pass)
 	}
 
-	if err != nil {
-		CoreResponse(w, http.StatusInternalServerError, nil)
-		return
-	}
-
-	if !models.NewUser(user) {
-		CoreResponse(w, http.StatusBadRequest, nil)
-		return
-	}
+	_, err = models.NewUser(user)
+	helpers.HandleError(http.StatusBadRequest, err)
 
 	CoreResponse(w, http.StatusCreated, nil)
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
-	users, result := models.GetAllUsers()
+	users, err := models.GetAllUsers()
+	helpers.HandleError(http.StatusBadRequest, err)
 
-	if result {
-		CoreResponse(w, http.StatusBadRequest, nil)
-		return
-	}
 	CoreResponse(w, http.StatusOK, users)
 }
 
@@ -54,16 +42,10 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	userId := chi.URLParam(r, "id")
 	ID, err := strconv.ParseInt(userId, 0, 0)
+	helpers.HandleError(http.StatusInternalServerError, err)
 
-	if err != nil {
-		CoreResponse(w, http.StatusInternalServerError, nil)
-		return
-	}
+	user, err := models.GetUserById(ID)
+	helpers.HandleError(http.StatusInternalServerError, err)
 
-	user, result := models.GetUserById(ID)
-	if result {
-		CoreResponse(w, http.StatusBadRequest, nil)
-		return
-	}
 	CoreResponse(w, http.StatusOK, user)
 }

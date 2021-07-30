@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/gowiki-api/pkg/storage"
+	"github.com/gowiki-api/storage"
 )
 
 var db = storage.GetDB()

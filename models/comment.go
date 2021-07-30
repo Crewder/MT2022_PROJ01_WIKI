@@ -2,6 +2,7 @@ package models
 
 import (
 	"gorm.io/gorm"
+	"log"
 )
 
 type Comment struct {
@@ -19,49 +20,31 @@ func init() {
 	_ = db.AutoMigrate(&Comment{})
 }
 
-func NewComment(comment *Comment) bool {
+func NewComment(comment *Comment) (*Comment, error) {
 	if comment == nil || *comment.Comment == "" {
-		return false
+		log.Fatal(400, "il faut saisir un commentaire ")
 	}
 
 	result := db.Create(&comment)
-	if result.Error != nil {
-		return false
-	}
-	return true
+	return comment, result.Error
 }
 
-func GetAllCommentsByArticle(articleId string) ([]Comment, bool) {
+func GetAllCommentsByArticle(articleId string) ([]Comment, error) {
 	var comments []Comment
 	result := db.Where("article_id = ?", articleId).Find(&comments)
-	if result.Error == nil {
-		return comments, false
-	}
-	return comments, true
+
+	return comments, result.Error
 }
 
-func GetComment(id string) (*Comment, bool) {
+func GetComment(id string) (*Comment, error) {
 	var comment Comment
 	result := db.Where("id = ?", id).Find(&comment)
 
-	if result.Error == nil {
-		return &comment, false
-	}
-	return &comment, true
+	return &comment, result.Error
 }
 
-func DeleteComment(comment *Comment) bool {
+func DeleteComment(comment *Comment) (*Comment, error) {
 	result := db.Delete(&comment)
-	if result.Error != nil {
-		return false
-	}
-	return true
-}
 
-func UpdateComment(comment *Comment) bool {
-	result := db.Save(&comment)
-	if result.Error != nil {
-		return false
-	}
-	return true
+	return comment, result.Error
 }

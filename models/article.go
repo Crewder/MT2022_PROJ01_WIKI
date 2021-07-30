@@ -1,11 +1,11 @@
 package models
 
 import (
+	"github.com/gowiki-api/tools"
+	"gorm.io/gorm"
+	"log"
 	"strconv"
 	"strings"
-
-	"github.com/gowiki-api/pkg/tools"
-	"gorm.io/gorm"
 )
 
 type Article struct {
@@ -23,66 +23,56 @@ func init() {
 	_ = db.AutoMigrate(&Article{})
 }
 
-func GetAllArticles() ([]Article, bool) {
+func GetAllArticles() ([]Article, error) {
 	var articles []Article
 	result := db.Find(&articles)
-	if result.Error != nil {
-		return articles, true
-	}
-	return articles, false
+	return articles, result.Error
 }
 
-func GetArticleBySlug(slug string) (*Article, bool) {
+func GetArticleBySlug(slug string) (*Article, error) {
 	var article Article
 	if len(slug) <= 0 {
-		return &article, false
+		log.Fatal(400, "il faut saisir le slug")
 	}
 	result := db.Where("slug = ?", slug).Find(&article)
-	if article.Title == nil || article.Content == nil{
-		return &article, true
-	}
-	if result.Error == nil {
-		return &article, false
+	if article.Title == nil || article.Content == nil {
+		return &article, result.Error
 	}
 
-	return &article, true
+	return &article, result.Error
 }
 
-func GetArticleById(Id int64) (*Article, bool) {
+func GetArticleById(Id int64) (*Article, error) {
 	var article Article
-	db.Where("ID = ?", Id).Find(&article)
+	result := db.Where("ID = ?", Id).Find(&article)
 
 	if article.Model.ID == 0 {
-		return &article, false
+		return &article, result.Error
 	}
-	return &article, true
+	return &article, result.Error
 }
 
-func NewArticle(a *Article) bool {
+func NewArticle(a *Article) (*Article, error) {
 	if a == nil || *a.Title == "" || *a.Content == "" {
-		return false
+		log.Fatal(500, "l'article n'est pas valide")
 	}
-	if a.Title == nil{
-		return false
+	if a.Title == nil {
+		log.Fatal(500, "l'article n'a pas de titre")
 	}
 	a.Slug = SlugUnique(strings.ToLower(tools.SanitizerSlug(*a.Title)))
 	result := db.Create(&a)
-	if result.Error != nil {
-		return false
-	}
-	return true
+
+	return a, result.Error
 }
 
-func UpdateArticle(a *Article) bool {
+func UpdateArticle(a *Article) (*Article, error) {
 	if a == nil {
-		return false
+		log.Fatal(500, "il n'y a pas d'article a update")
 	}
 	a.Slug = SlugUnique(strings.ToLower(tools.SanitizerSlug(*a.Title)))
 	result := db.Save(&a)
-	if result.Error != nil {
-		return false
-	}
-	return true
+
+	return a, result.Error
 }
 
 func SlugUnique(title string) string {
@@ -92,7 +82,7 @@ func SlugUnique(title string) string {
 
 	for !slugValid {
 		article, result := GetArticleBySlug(slug)
-		if article.Slug != "" && result == true {
+		if article.Slug != "" && result != nil {
 			slug = strings.ToLower(tools.SanitizerSlug(title)) + "-" + strconv.Itoa(indexSlug)
 			indexSlug++
 		} else if article.Slug == slug {
@@ -105,6 +95,7 @@ func SlugUnique(title string) string {
 	return slug
 }
 
-func DeleteArticle(article *Article) {
-	db.Delete(&article)
+func DeleteArticle(article *Article) (*Article, error) {
+	result := db.Delete(&article)
+	return article, result.Error
 }

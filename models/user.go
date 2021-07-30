@@ -20,55 +20,37 @@ func init() {
 	_ = db.AutoMigrate(&User{})
 }
 
-func Exists(id uint) bool {
-	exist := false
-	var getUser User
-	anyUser := db.Where("ID = ?", id).Find(&getUser)
-
-	if anyUser != nil {
-		exist = true
-	}
-	return exist
-}
-
-func GetAllUsers() ([]User, bool) {
+func GetAllUsers() ([]User, error) {
 	var Users []User
 	result := db.Find(&Users)
 
-	if result.Error == nil {
-		return Users, false
-	}
-	return Users, true
+	return Users, result.Error
 }
 
-func GetUserById(Id int64) (*User, bool) {
+func GetUserById(Id int64) (*User, error) {
 	var getUser User
 	result := db.Where("ID = ?", Id).Find(&getUser)
-	if result.Error == nil {
-		return &getUser, false
-	}
-	return &getUser, true
+
+	return &getUser, result.Error
 }
 
-func NewUser(u *User) bool {
+func NewUser(u *User) (*User, error) {
 	if u == nil {
 		log.Fatal(u)
 	}
 	u.Role = "member"
 	result := db.Create(&u)
-	if result.Error != nil {
-		return false
-	}
-	return true
+
+	return u, result.Error
 }
 
-func GetUserByEmail(Email string) *User {
+func GetUserByEmail(Email string) (*User, error) {
 	var getUser User
 	db := db.Where("email = ?", Email).Find(&getUser)
 	if db.RowsAffected != 1 {
 		log.Fatal(http.StatusBadRequest)
 	}
-	return &getUser
+	return &getUser, db.Error
 }
 
 func PasswordIsValid(hashedPwd string, plainPwd []byte) bool {
